@@ -1,9 +1,16 @@
 import Button from "../components/Button";
 const BookRecommendation = () => {
+  const clickHandler = () => {
+    console.log("ㅎㅇ");
+  };
   return (
     <div>
       <div>BookRecommendation</div>
-      <Button text={"작성"} type={"color-3"}></Button>
+      <Button
+        text={"작성"}
+        color={"bg-color-3"}
+        onClick={clickHandler}
+      ></Button>
     </div>
   );
 };
