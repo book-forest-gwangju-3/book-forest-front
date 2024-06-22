@@ -1,0 +1,27 @@
+.user {
+  position: relative;
+  padding: 16px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.drop {
+  display: none;
+  position: absolute;
+  left: -76px;
+  margin-top: 12px;
+  color: black;
+
+  width: 200px;
+  border-radius: 8px;
+  box-shadow: 1px 1px 3px 1px #c0c0c0;
+  background-color: white;
+}
+.drop > div > * {
+  display: block;
+  padding: 8px 16px;
+}
+
+.user:hover .drop {
+    display: block;
+  }
