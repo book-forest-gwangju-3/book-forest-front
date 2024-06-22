@@ -6,7 +6,7 @@ import LogIn from "./pages/LogIn";
 import SignUp from "./pages/SignUp";
 import Tier from "./pages/Tier";
 import Report from "./pages/Report";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 
 function App() {
   return (
