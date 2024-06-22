@@ -1,4 +1,5 @@
 import Button from "../components/Button";
+import Slider from "../components/Slider";
 const BookRecommendation = () => {
   const clickHandler = () => {
     console.log("ㅎㅇ");
@@ -11,6 +12,7 @@ const BookRecommendation = () => {
         color={"bg-color-3"}
         onClick={clickHandler}
       ></Button>
+      <Slider />
     </div>
   );
 };
