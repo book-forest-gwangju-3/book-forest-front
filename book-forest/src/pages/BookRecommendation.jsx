@@ -1,5 +1,6 @@
 import Button from "../components/Button";
 import Slider from "../components/Slider";
+import SearchForm from "../components/SearchForm";
 const BookRecommendation = () => {
   const clickHandler = () => {
     console.log("ㅎㅇ");
@@ -13,6 +14,8 @@ const BookRecommendation = () => {
         onClick={clickHandler}
       ></Button>
       <Slider />
+      <SearchForm text={"검색어를 입력해주세요"} type={"max-w-md"} />
+      <SearchForm text={"도서제목을 입력해주세요"} />
     </div>
   );
 };
