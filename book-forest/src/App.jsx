@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import Tier from "./pages/Tier";
 import Report from "./pages/Report";
 import ReportDetail from "./pages/ReportDetail";
+import ReportEditor from "./pages/ReportEditor";
 import Header from "./components/Header";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/tier" element={<Tier />} />
           <Route path="/report" element={<Report />} />
           <Route path="/report/:id" element={<ReportDetail />} />
+          <Route path="/report/editor/:id" element={<ReportEditor />} />
           <Route path="/book-recommendation" element={<BookRecommendation />} />
         </Routes>
       </div>
