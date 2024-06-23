@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  urls: ['/', '/my-report'],
   pages: [true, false],
 };
 
