@@ -1,6 +1,6 @@
 import Button from "./Button";
 const ReportCard = ({ img, text }) => {
-  const containerClass = "flex items-center justify-center mt-6";
+  const containerClass = "flex items-center justify-center my-6";
   const wrapperClass =
     "relative flex w-full flex-row rounded-xl bg-white bg-clip-border text-gray-700 shadow-md";
   const textWrapperClass = "p-6 pl-10";
