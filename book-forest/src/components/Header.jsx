@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { clearUser } from "../store/userSlice"
+import { clearUser } from "./../features/user/userSlice"
 import { FaUserCircle } from "react-icons/fa"
 import styles from "./Header.module.css"
 import axios from "axios"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUser } from "./../store/userSlice";
+import { setUser } from "./../features/user/userSlice";
 import axios from "axios";
 
 const LoginForm = () => {
@@ -27,21 +27,31 @@ const LoginForm = () => {
     });
   };
 
+  const form = `flex flex-col items-center justify-center w-2/5 pt-8 pb-6`
+  const ipt = `w-full py-2 px-4 mb-7 border-b-2 border-color-3 outline-none`
+  const btn = `w-full bg-color-3 py-2 text-xl rounded-lg`
+
   return(
-    <form onSubmit={handleLogin}>
+    <form className={form} onSubmit={handleLogin}>
       <input 
+        className={ipt}
         type="text" 
         value={username} 
         placeholder="아이디 입력"
         onChange={e => setUsername(e.target.value)}  
+        autoComplete="username"
+        required
       />
       <input 
+        className={ipt}
         type="password" 
         value={password}
         placeholder="비밀번호 입력"
         onChange={e => setPassword(e.target.value)}
+        autoComplete="current-password"
+        required
       />
-      <button type="submit">로그인</button>
+      <button className={btn} type="submit">로그인</button>
     </form>
   );
 };

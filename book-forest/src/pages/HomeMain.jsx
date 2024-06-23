@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setPage } from './../store/pageSlice';
+import { setPage } from './../features/page/pageSlice';
 
 const HomeMain = () => {
   const dispatch = useDispatch();

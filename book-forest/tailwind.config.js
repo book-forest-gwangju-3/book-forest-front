@@ -15,7 +15,7 @@ export default {
         "color-9": "#4F7561",
         "color-10": "#335643",
         "color-11": "#F9D84C",
-        "color-12": "#F9D84C",
+        "color-12": "#F82F62",
         "color-13": "#E16D75",
         "color-14": "#80C7A8",
         "color-15": "#193018",
