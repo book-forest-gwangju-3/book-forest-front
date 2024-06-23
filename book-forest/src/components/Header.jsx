@@ -3,10 +3,10 @@ import { FaUserCircle } from "react-icons/fa"
 import styles from "./Header.module.css"
 
 const Header = () => {
-  const isLogin = true  // 테스트용 임시 변수
+  const isLogin = false  // 테스트용 임시 변수
   const navigate = useNavigate()
 
-  const Logout = () => {
+  const logOut = () => {
     console.log('로그아웃 과정 진행')
     navigate("/login")
   }
@@ -35,7 +35,7 @@ const Header = () => {
                 </div>
               </div>
             </div>
-            <div onClick={Logout} className={styles.item}>로그아웃</div>
+            <div onClick={logOut} className={styles.item}>로그아웃</div>
           </div> :
           <div className={styles.container}>
             <Link className={styles.item} to="/login" >로그인</Link>
