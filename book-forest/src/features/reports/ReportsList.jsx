@@ -1,6 +1,6 @@
 import SearchForm from "../../components/SearchForm";
 import ReportFilterButton from "./ReportFilterButton";
-
+import Button from "../../components/Button";
 const ReportsList = () => {
   // 페이징 현재 선택된 페이지 색 바꾸기
   const containerClass = "my-10";
@@ -63,16 +63,18 @@ const ReportsList = () => {
           </tr>
         </tbody>
       </table>
-
-      {/* 페이지네이션 */}
-      <div className={paginationWrapperClass}>
-        <button className={paginationButtonClass}>&lt;</button>
-        <p className={paginationNumberClass}>1</p>
-        <p className={paginationNumberClass}>2</p>
-        <p className={paginationNumberClass}>3</p>
-        <p className={paginationNumberClass}>4</p>
-        <p className={paginationNumberClass}>5</p>
-        <button className={paginationButtonClass}>&gt;</button>
+      <div className="flex">
+        {/* 페이지네이션 */}
+        <div className={paginationWrapperClass}>
+          <button className={paginationButtonClass}>&lt;</button>
+          <p className={paginationNumberClass}>1</p>
+          <p className={paginationNumberClass}>2</p>
+          <p className={paginationNumberClass}>3</p>
+          <p className={paginationNumberClass}>4</p>
+          <p className={paginationNumberClass}>5</p>
+          <button className={paginationButtonClass}>&gt;</button>
+        </div>
+        <Button text={"글 작성"} color={"bg-pink-500 text-white"} />
       </div>
     </div>
   );
