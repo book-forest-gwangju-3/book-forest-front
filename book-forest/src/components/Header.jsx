@@ -1,15 +1,25 @@
 import { Link, useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { clearUser } from "../store/userSlice"
 import { FaUserCircle } from "react-icons/fa"
 import styles from "./Header.module.css"
+import axios from "axios"
 
 const Header = () => {
-  const isLogin = true  // 테스트용 임시 변수
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const isLogin = useSelector((state) => state.user.isLogin)
 
-  const logOut = () => {
-    console.log('로그아웃 과정 진행')
-    navigate("/login")
-  }
+  const logOut = async () => {
+    try {
+      await axios.post('http://localhost:8080/user/logout')
+      dispatch(clearUser())
+      console.log('로그아웃')
+      navigate("/login")
+    } catch (error) {
+      console.log('로그아웃 과정에서 오류가 발생했습니다:', error)
+    }
+  };
 
   const headerClass = `bg-color-10 text-color-1 flex justify-center relative`;
   const logo = `text-3xl p-3.5`
