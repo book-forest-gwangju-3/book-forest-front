@@ -3,7 +3,7 @@ import { FaUserCircle } from "react-icons/fa"
 import styles from "./Header.module.css"
 
 const Header = () => {
-  const isLogin = false  // 테스트용 임시 변수
+  const isLogin = true  // 테스트용 임시 변수
   const navigate = useNavigate()
 
   const logOut = () => {
@@ -31,7 +31,7 @@ const Header = () => {
                 </div>
                 <hr />
                 <div>
-                  <Link to="/">나의 독후감</Link>
+                  <Link to="/my-report">나의 독후감</Link>
                 </div>
               </div>
             </div>

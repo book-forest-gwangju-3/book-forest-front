@@ -1,21 +1,15 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const MypageHeader = () => {
-  const urls = ['/', '/my-report']
-  const [pages, setTodos] = useState([true, false])
-
-  const navigate = useNavigate()
+  const urls = useSelector((state) => state.page.urls);
+  const pages = useSelector((state) => state.page.pages);
+  const navigate = useNavigate();
 
   const handleClick = (now) => {
-    const newPages = pages.map((_, idx) => {
-      return (idx === now) ? true : false
-    })
-
-    setTodos(newPages)
-    navigate(urls[now])
+    navigate(urls[now]);
   }
-  
 
   const navClass = `pt-10 pb-9 text-xl`
   const noActive = `mr-9 cursor-pointer select-none text-color-18`

@@ -1,7 +1,19 @@
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setPage } from './../store/pageSlice';
+
 const HomeMain = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setPage(0));
+  }, [dispatch]);
+
   return (
-    <>홈메인</>
-  )
+    <>
+      <h1>홈메인</h1>
+    </>
+  );
 };
 
 export default HomeMain;
