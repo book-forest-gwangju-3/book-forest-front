@@ -1,7 +1,9 @@
 import SearchForm from "../../components/SearchForm";
 import ReportFilterButton from "./ReportFilterButton";
 import Button from "../../components/Button";
+import { useNavigate } from "react-router-dom";
 const ReportsList = () => {
+  const nav = useNavigate();
   // 페이징 현재 선택된 페이지 색 바꾸기
   const containerClass = "my-10";
   const inputFilterWrapperClass = "flex gap-4";
@@ -74,7 +76,11 @@ const ReportsList = () => {
           <p className={paginationNumberClass}>5</p>
           <button className={paginationButtonClass}>&gt;</button>
         </div>
-        <Button text={"글 작성"} color={"bg-pink-500 text-white"} />
+        <Button
+          onClick={() => nav("/report/editor/1")}
+          text={"글 작성"}
+          color={"bg-pink-500 text-white"}
+        />
       </div>
     </div>
   );
