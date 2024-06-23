@@ -14,7 +14,7 @@ function App() {
       <Header />
       <div style={{ width: "1200px", margin: "0 auto" }}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="*" element={<Home />} />
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/tier" element={<Tier />} />

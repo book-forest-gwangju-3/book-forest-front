@@ -25,8 +25,28 @@ export default {
         "color-19": "#BCB5A3",
         "color-20": "#6E6E6E",
         "color-21": "#0064AD",
+        "color-22": "#617A3A",
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.underline-after': {
+          position: 'relative',
+          '&::after': {
+            content: '""',
+            display: 'block',
+            borderBottom: '4px solid #617A3A',
+            width: '100%',
+            position: 'absolute',
+            bottom: '-12px',
+            left: '0',
+          },
+        },
+      };
+
+      addUtilities(newUtilities, ['responsive', 'hover']);
+    },
+  ],
 };
