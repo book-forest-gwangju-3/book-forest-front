@@ -2,6 +2,7 @@ import Button from "../components/Button";
 import Slider from "../components/Slider";
 import SearchForm from "../components/SearchForm";
 import ReportCard from "../components/ReportCard";
+import SectionTitle from "../components/SectionTitle";
 import img1 from "../assets/img/image1.png";
 
 const BookRecommendation = () => {
@@ -19,6 +20,8 @@ const BookRecommendation = () => {
       <Slider />
       <SearchForm text={"검색어를 입력해주세요"} type={"max-w-md"} />
       <SearchForm text={"도서제목을 입력해주세요"} />
+      <SectionTitle text={"주간 인기 독후감"} />
+      <SectionTitle text={"완료한 도서 목록"} type={"text-center"} />
       <ReportCard img={img1} text={"주간 독후감 1위"} />
       <ReportCard img={img1} />
     </div>
