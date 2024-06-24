@@ -1,30 +1,23 @@
-import Button from "../components/Button";
-import Slider from "../components/Slider";
-import SearchForm from "../components/SearchForm";
-import ReportCard from "../components/ReportCard";
 import SectionTitle from "../components/SectionTitle";
-import img1 from "../assets/img/image1.png";
+import Slider from "../components/Slider";
 
 const BookRecommendation = () => {
-  const clickHandler = () => {
-    console.log("ㅎㅇ");
-  };
+  const contentWrapperClass = "mb-12";
   return (
-    <div>
-      <div>BookRecommendation</div>
-      <Button
-        text={"작성"}
-        color={"bg-color-3"}
-        onClick={clickHandler}
-      ></Button>
-      <Slider />
-      <SearchForm text={"검색어를 입력해주세요"} type={"max-w-md"} />
-      <SearchForm text={"도서제목을 입력해주세요"} />
-      <SectionTitle text={"주간 인기 독후감"} />
-      <SectionTitle text={"완료한 도서 목록"} type={"text-center"} />
-      <ReportCard img={img1} text={"주간 독후감 1위"} />
-      <ReportCard img={img1} />
-    </div>
+    <main>
+      <div className={contentWrapperClass}>
+        <SectionTitle text={"베스트 셀러"} type={"text-center"} />
+        <Slider />
+      </div>
+      <div className={contentWrapperClass}>
+        <SectionTitle text={"신간 도서"} type={"text-center"} />
+        <Slider />
+      </div>
+      <div className={contentWrapperClass}>
+        <SectionTitle text={"편집자 추천"} type={"text-center"} />
+        <Slider />
+      </div>
+    </main>
   );
 };
 
