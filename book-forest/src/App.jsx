@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import BookRecommendation from "./pages/BookRecommendation";
 import BookDetail from "./pages/BookDetail";
+import BookSearch from "./pages/BookSearch";
 import LogIn from "./pages/LogIn";
 import SignUp from "./pages/SignUp";
 import Tier from "./pages/Tier";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/report/:id" element={<ReportDetail />} />
           <Route path="/report/editor/:id" element={<ReportEditor />} />
           <Route path="/book-recommendation" element={<BookRecommendation />} />
+          <Route path="/book/search" element={<BookSearch />} />
           <Route path="/book/:id" element={<BookDetail />} />
         </Routes>
       </div>
