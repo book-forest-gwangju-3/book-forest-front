@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setPage } from './../features/page/pageSlice';
-
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setPage } from "./../features/page/pageSlice";
+import Heatmap from "../features/home/Heatmap";
 const HomeMain = () => {
   const dispatch = useDispatch();
 
@@ -10,9 +10,9 @@ const HomeMain = () => {
   }, [dispatch]);
 
   return (
-    <>
-      <h1>홈메인</h1>
-    </>
+    <div>
+      <Heatmap />
+    </div>
   );
 };
 
