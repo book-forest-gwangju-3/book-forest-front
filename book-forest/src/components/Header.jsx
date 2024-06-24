@@ -58,6 +58,7 @@ const Header = () => {
         <Link className={navItemClass} to="/report" >독후감</Link>
         <Link className={navItemClass} to="/book-recommendation" >책추천</Link>
         <Link className={navItemClass} to="/tier" >랭킹</Link>
+        <Link className={navItemClass} to="/book/search" >검색</Link>
       </div>
       <hr className={hrClass} />
     </header>
