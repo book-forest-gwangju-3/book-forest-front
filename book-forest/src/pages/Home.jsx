@@ -8,7 +8,7 @@ const Home = () => {
     <>
       <MypageHeader />
       <Routes>
-        <Route path="/" element={<HomeMain />} />
+        <Route path="*" element={<HomeMain />} />
         <Route path="/my-report" element={<HomeMyReport />} />
       </Routes>
     </>
