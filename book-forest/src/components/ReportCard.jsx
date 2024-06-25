@@ -1,5 +1,7 @@
 import Button from "./Button";
 const ReportCard = ({ img, text }) => {
+  // 아예 pages/Report에서 데이터를 받아서 여기로 줘야됨.
+  // props : id, img, title, writer, content(길이 제한)
   const containerClass = "flex items-center justify-center my-6";
   const wrapperClass =
     "relative flex w-full flex-row rounded-xl bg-white bg-clip-border text-gray-700 shadow-md";
