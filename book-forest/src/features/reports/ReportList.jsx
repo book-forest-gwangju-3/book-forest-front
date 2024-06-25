@@ -1,8 +1,64 @@
 import SearchForm from "../../components/SearchForm";
 import ReportFilterButton from "./ReportFilterButton";
+import ReportListItem from "./ReportListItem";
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
-const ReportsList = () => {
+
+const report = [
+  {
+    "book-review-id": 1,
+    title: "몰입을 읽고",
+    content: "재밌음",
+    "created-at": "2024.06.10",
+    "updated-at": "2024.06.10",
+    book: {
+      "book-id": 1,
+      title: "몰입",
+      cover: "url",
+    },
+    user: {
+      "user-id": 1,
+      "profile-image": "url",
+      nickname: "지예찬",
+    },
+  },
+  {
+    "book-review-id": 2,
+    title: "어린왕자을 읽고",
+    content: "유치함",
+    "created-at": "2024.06.11",
+    "updated-at": "2024.06.11",
+    book: {
+      "book-id": 2,
+      title: "어린왕자",
+      cover: "url",
+    },
+    user: {
+      "user-id": 2,
+      "profile-image": "url",
+      nickname: "김가람",
+    },
+  },
+  {
+    "book-review-id": 3,
+    title: "몰입을 읽고",
+    content: "쉽지않음",
+    "created-at": "2024.06.13",
+    "updated-at": "2024.06.13",
+    book: {
+      "book-id": 1,
+      title: "자바의정석",
+      cover: "url",
+    },
+    user: {
+      "user-id": 3,
+      "profile-image": "url",
+      nickname: "윤하연",
+    },
+  },
+];
+
+const ReportList = () => {
   const nav = useNavigate();
   // 페이징 현재 선택된 페이지 색 바꾸기
   const containerClass = "my-10";
@@ -14,10 +70,6 @@ const ReportsList = () => {
   const tableHeadWriterClass = "px-4 py-2 w-1/5";
   const tableHeadDateClass = "px-4 py-2 w-1/5";
   const tableBodyWrapperClass = "text-sm text-gray-700";
-  const tableBodyClass =
-    "hover:bg-gray-100 border-b border-gray-200 text-center";
-  const tableBodyTitleClass = "px-4 py-4 text-left cursor-pointer";
-  const tableBodyWriterClass = "px-4 py-4";
   const paginationWrapperClass =
     "w-full flex justify-center border-gray-100 items-center";
   const paginationButtonClass =
@@ -43,26 +95,9 @@ const ReportsList = () => {
           </tr>
         </thead>
         <tbody className={tableBodyWrapperClass}>
-          <tr className={tableBodyClass}>
-            <td className={tableBodyTitleClass}>몰입을 읽고</td>
-            <td className={tableBodyWriterClass}>지예찬</td>
-            <td className={tableBodyWrapperClass}>24.06.23</td>
-          </tr>
-          <tr className={tableBodyClass}>
-            <td className={tableBodyTitleClass}>ㄱㄱㄱㄱ</td>
-            <td className={tableBodyWriterClass}>윤하연</td>
-            <td className={tableBodyWrapperClass}>24.06.22</td>
-          </tr>
-          <tr className={tableBodyClass}>
-            <td className={tableBodyTitleClass}>들어와봐요</td>
-            <td className={tableBodyWriterClass}>김가람</td>
-            <td className={tableBodyWrapperClass}>24.06.20</td>
-          </tr>
-          <tr className={tableBodyClass}>
-            <td className={tableBodyTitleClass}>읽어주세요</td>
-            <td className={tableBodyWriterClass}>최재원</td>
-            <td className={tableBodyWrapperClass}>24.06.20</td>
-          </tr>
+          {report.map((item) => {
+            return <ReportListItem key={item["book-review-id"]} item={item} />;
+          })}
         </tbody>
       </table>
       <div className="flex">
@@ -85,4 +120,4 @@ const ReportsList = () => {
     </div>
   );
 };
-export default ReportsList;
+export default ReportList;
