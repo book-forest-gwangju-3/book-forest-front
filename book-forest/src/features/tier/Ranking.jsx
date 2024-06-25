@@ -30,6 +30,8 @@ const Ranking = () => {
 
   const table = `w-full`
   const th = `font-normal text-xs text-color-17 py-0.5`
+  const thTier = `font-normal text-xs text-color-17 py-0.5 w-48`
+  const thPoint = `font-normal text-xs text-color-17 py-0.5 w-56`
   const thRank = `font-normal text-xs text-color-17 w-32 py-0.5`
   const thId = `font-normal text-xs text-color-17 w-36`
   const bdBottom = `border-b border-color-16`
@@ -54,8 +56,8 @@ const Ranking = () => {
           <tr className={bdBottom}>
             <th className={thRank}>등수</th>
             <th className={th}>닉네임</th>
-            <th className={th}>포인트</th>
-            <th className={th}>티어</th>
+            <th className={thPoint}>포인트</th>
+            <th className={thTier}>티어</th>
             <th className={thId}>아이디</th>
           </tr>
         </thead>
