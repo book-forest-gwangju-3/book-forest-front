@@ -1,3 +1,4 @@
+import UserTier from "../components/UserTier";
 import Ranking from "./../features/tier/Ranking";
 
 const Tier = () => {
@@ -5,7 +6,7 @@ const Tier = () => {
 
   return (
     <div className={test}>
-      <div>--유저 정보--</div>
+      <UserTier />
       <Ranking />
     </div>
   )
