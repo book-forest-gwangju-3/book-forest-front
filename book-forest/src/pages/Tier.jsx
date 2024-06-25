@@ -1,11 +1,13 @@
 import Ranking from "./../features/tier/Ranking";
 
 const Tier = () => {
+  const test = `flex flex-col items-center`
+
   return (
-    <>
-      <h1>명예의 전당</h1>
+    <div className={test}>
+      <div>--유저 정보--</div>
       <Ranking />
-    </>
+    </div>
   )
 };
 
