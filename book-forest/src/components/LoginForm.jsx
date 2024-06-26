@@ -13,7 +13,6 @@ const LoginForm = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    console.log(username, password);
     const formData = new FormData()
 
     formData.append("password", password)
@@ -24,9 +23,10 @@ const LoginForm = () => {
         'Content-Type': 'multipart/form-data'
       }
     }).then(response => {
-      console.log(response)
-      const { token, nickname } = response.data;
-      dispatch(setUser({ token, isLogin: true, nickname }));
+      const token = response.headers.authorization.replace("Bearer ", "")
+      dispatch(setUser({ token }));
+      
+      console.log('로그인 성공')
       navigate("/");
     }).catch(error => {
       console.log('로그인에 실패했습니다. 다시 시도해주세요', error);

@@ -22,50 +22,44 @@ const SignupForm = () => {
     e.preventDefault();
 
     if (password1 !== password2) {
-      console.log('비밀번호가 일치하지 않습니다');
       return;
     }
 
     if (password1.length < 8) {
-      console.log('비밀번호는 최소 8글자 이상이어야 합니다');
       return;
     }
-
-    // axios 요청 보내는 방법 1 )
-    try {
-      // const response = await remote.get('https://pokeapi.co/api/v2/pokemon')   // 임시 open api
-      const response = await remote.post('http://localhost:8080/user/signup', {
-        username,
-        password: password1,
-        nickname
-      });
-
-      console.log(response)
-      // const { token, nickname: responseNickname } = response.data;
-      // dispatch(setUser({ token, isLogin: true, nickname: responseNickname }));
-
-      navigate("/");
-    } catch (error) {
-      console.log('회원가입 또는 로그인 과정에서 오류가 발생했습니다:', error);
-    }
-
     
-    // axios 요청 보내는 방법 2 )
-    // remote.post('http://localhost:8080/user/signup', {
-    //   username,
-    //   password: password1,
-    //   nickname
-    // })
-    // .then(response => {
-    //   console.log(response);
-    //   // const { token, nickname: responseNickname } = response.data;
-    //   // dispatch(setUser({ token, isLogin: true, nickname: responseNickname }));
+    remote.post('http://localhost:8080/user/signup', {
+      username,
+      password: password1,
+      nickname
+    })
+    .then(response => {
+      console.log('회원가입 성공 |', response.data);
 
-    //   navigate("/");
-    // })
-    // .catch(error => {
-    //   console.log('회원가입 또는 로그인 과정에서 오류가 발생했습니다:', error);
-    // });
+      const formData = new FormData()
+
+      formData.append("password", password1)
+      formData.append("username", username)
+    
+      // 회원가입 성공 시 자동 로그인 요청
+      return axios.post('http://localhost:8080/login', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    })
+    .then(loginResponse => {
+      const token = loginResponse.headers.authorization.replace("Bearer ", "")
+      dispatch(setUser({ token }));
+
+      console.log('로그인 성공')
+      navigate("/");
+    })
+    .catch(error => {
+      console.log('회원가입 또는 로그인 과정에서 오류가 발생했습니다 | ', error);
+    });
+    
   };
 
   const handleFirstPassword = (e) => {

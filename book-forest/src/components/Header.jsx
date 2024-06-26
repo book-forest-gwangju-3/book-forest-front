@@ -11,14 +11,9 @@ const Header = () => {
   const isLogin = useSelector((state) => state.user.isLogin)
 
   const logOut = async () => {
-    try {
-      await axios.post('http://localhost:8080/user/logout')
-      dispatch(clearUser())
-      console.log('로그아웃')
-      navigate("/login")
-    } catch (error) {
-      console.log('로그아웃 과정에서 오류가 발생했습니다:', error)
-    }
+    console.log('로그아웃 axios 요청 not yet..')
+    dispatch(clearUser())
+    navigate("/login")
   };
 
   const headerClass = `bg-color-10 text-color-1 flex justify-center relative`;
