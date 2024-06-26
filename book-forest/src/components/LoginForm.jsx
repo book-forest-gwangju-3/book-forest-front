@@ -14,11 +14,17 @@ const LoginForm = () => {
     e.preventDefault();
 
     console.log(username, password);
+    const formData = new FormData()
 
-    axios.post('http://localhost:8080/user/login', {
-      username,
-      password,
+    formData.append("password", password)
+    formData.append("username", username)
+
+    axios.post('http://localhost:8080/login', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     }).then(response => {
+      console.log(response)
       const { token, nickname } = response.data;
       dispatch(setUser({ token, isLogin: true, nickname }));
       navigate("/");
