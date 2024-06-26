@@ -29,6 +29,7 @@ export default {
         "color-23": "#F2F2F2",
         "color-24": "#DDEAF3",
         "color-25": "#CA9472",
+        "color-26": "#D6E8D3",
       },
     },
   },
