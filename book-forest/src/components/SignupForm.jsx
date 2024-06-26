@@ -6,6 +6,8 @@ import axios from "axios";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { LiaTimesCircleSolid } from "react-icons/lia";
 
+const remote = axios.create()
+
 const SignupForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,40 +19,53 @@ const SignupForm = () => {
   const [infoMessage, setInfoMessage] = useState('');
 
   const handleSignup = async (e) => {
-    e.preventDefault()
-
-    console.log(username, password1, password2, nickname)
+    e.preventDefault();
 
     if (password1 !== password2) {
-      console.log('비밀번호가 일치하지 않습니다')
-      return
+      console.log('비밀번호가 일치하지 않습니다');
+      return;
     }
 
     if (password1.length < 8) {
-      console.log('비밀번호는 최소 8글자 이상이어야 합니다')
-      return
+      console.log('비밀번호는 최소 8글자 이상이어야 합니다');
+      return;
     }
 
-    axios.post('http://localhost:8080/user/signup', {
-      username,
-      password: password1,
-      nickname,
-    })
-    .then(() => {
-      return axios.post('http://localhost:8080/user/login', {
+    // axios 요청 보내는 방법 1 )
+    try {
+      // const response = await remote.get('https://pokeapi.co/api/v2/pokemon')   // 임시 open api
+      const response = await remote.post('http://localhost:8080/user/signup', {
         username,
         password: password1,
+        nickname
       });
-    })
-    .then((loginResponse) => {
-      const { token, nickname } = loginResponse.data;
-      dispatch(setUser({ token, isLogin: true, nickname }));
+
+      console.log(response)
+      // const { token, nickname: responseNickname } = response.data;
+      // dispatch(setUser({ token, isLogin: true, nickname: responseNickname }));
 
       navigate("/");
-    })
-    .catch((error) => {
+    } catch (error) {
       console.log('회원가입 또는 로그인 과정에서 오류가 발생했습니다:', error);
-    });
+    }
+
+    
+    // axios 요청 보내는 방법 2 )
+    // remote.post('http://localhost:8080/user/signup', {
+    //   username,
+    //   password: password1,
+    //   nickname
+    // })
+    // .then(response => {
+    //   console.log(response);
+    //   // const { token, nickname: responseNickname } = response.data;
+    //   // dispatch(setUser({ token, isLogin: true, nickname: responseNickname }));
+
+    //   navigate("/");
+    // })
+    // .catch(error => {
+    //   console.log('회원가입 또는 로그인 과정에서 오류가 발생했습니다:', error);
+    // });
   };
 
   const handleFirstPassword = (e) => {
