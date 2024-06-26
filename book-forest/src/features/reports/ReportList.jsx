@@ -3,64 +3,29 @@ import ReportFilterButton from "./ReportFilterButton";
 import ReportListItem from "./ReportListItem";
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
-
-const report = [
-  {
-    "book-review-id": 1,
-    title: "몰입을 읽고",
-    content: "재밌음",
-    "created-at": "2024.06.10",
-    "updated-at": "2024.06.10",
-    book: {
-      "book-id": 1,
-      title: "몰입",
-      cover: "url",
-    },
-    user: {
-      "user-id": 1,
-      "profile-image": "url",
-      nickname: "지예찬",
-    },
-  },
-  {
-    "book-review-id": 2,
-    title: "어린왕자을 읽고",
-    content: "유치함",
-    "created-at": "2024.06.11",
-    "updated-at": "2024.06.11",
-    book: {
-      "book-id": 2,
-      title: "어린왕자",
-      cover: "url",
-    },
-    user: {
-      "user-id": 2,
-      "profile-image": "url",
-      nickname: "김가람",
-    },
-  },
-  {
-    "book-review-id": 3,
-    title: "몰입을 읽고",
-    content: "쉽지않음",
-    "created-at": "2024.06.13",
-    "updated-at": "2024.06.13",
-    book: {
-      "book-id": 1,
-      title: "자바의정석",
-      cover: "url",
-    },
-    user: {
-      "user-id": 3,
-      "profile-image": "url",
-      nickname: "윤하연",
-    },
-  },
-];
-
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { sortedByDateDesc } from "../../utils/dateUtils";
 const ReportList = () => {
+  const [reports, setReports] = useState([]);
   const nav = useNavigate();
-  // 페이징 현재 선택된 페이지 색 바꾸기
+  useEffect(() => {
+    fetchReports();
+  }, []); // 마운트 될때만 실행
+
+  // 독후감 목록 불러오는 함수
+  const fetchReports = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/book-reviews");
+      const sortedReports = sortedByDateDesc(response.data.bookReviews); // 최신순으로 정렬
+      setReports(sortedReports);
+      console.log(sortedReports);
+    } catch (error) {
+      console.error("Error fetching reports", error);
+    }
+  };
+
+  // tailwind
   const containerClass = "my-10";
   const inputFilterWrapperClass = "flex gap-4";
   const tableWrapperClass = "table-auto border-collapse w-full my-5";
@@ -95,8 +60,8 @@ const ReportList = () => {
           </tr>
         </thead>
         <tbody className={tableBodyWrapperClass}>
-          {report.map((item) => {
-            return <ReportListItem key={item["book-review-id"]} item={item} />;
+          {reports.map((item) => {
+            return <ReportListItem key={item.id} item={item} />;
           })}
         </tbody>
       </table>
