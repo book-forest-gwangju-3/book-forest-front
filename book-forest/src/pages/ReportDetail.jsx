@@ -14,7 +14,8 @@ const ReportDetail = () => {
   const [report, setReport] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const userInfo = useSelector((state) => state.user.userInfo);
-  const isLogin = useSelector((state) => state.user.isLogin);
+  const isLogin = useSelector((state) => state.user.isLogin); // 이따 이걸로 비로그인 댓글창 활성화 막아야됨
+  const token = useSelector((state) => state.user.token);
   const nav = useNavigate();
   const fetchReport = useCallback(async () => {
     try {
@@ -32,10 +33,23 @@ const ReportDetail = () => {
   useEffect(() => {
     fetchReport();
   }, [fetchReport]);
-  // params에 해당하는 독후감 데이터 가져오는 로직 추가
+
+  // 독후감 삭제
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/book-reviews/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("독후감이 성공적으로 삭제되었습니다.");
+      nav("/report"); // 삭제 후 독후감 목록 페이지로 이동
+    } catch (error) {
+      console.error("Error deleting report", error);
+    }
+  };
+
   // 로그인시 댓글 작성가능, 비로그인시 불가능
-  // 로그인유저 === 작성자면 수정, 삭제 버튼
-  // 시간 변환하는 함수 추가
   // 좋아요 버튼 토글로 아이콘 바뀌게
   // 댓글 수 렌더링
   // 자기가 쓴 댓글에는 수정, 삭제 버튼
@@ -58,6 +72,7 @@ const ReportDetail = () => {
               color={"bg-color-17 text-white h-10 text-base"}
             />
             <Button
+              onClick={handleDelete}
               text={"삭제"}
               color={"bg-color-17 text-white h-10 text-base"}
             />
