@@ -19,7 +19,6 @@ const ReportList = () => {
       const response = await axios.get("http://localhost:8080/book-reviews");
       const sortedReports = sortedByDateDesc(response.data.bookReviews); // 최신순으로 정렬
       setReports(sortedReports);
-      console.log(sortedReports);
     } catch (error) {
       console.error("Error fetching reports", error);
     }
@@ -77,7 +76,7 @@ const ReportList = () => {
           <button className={paginationButtonClass}>&gt;</button>
         </div>
         <Button
-          onClick={() => nav("/report/editor/1")}
+          onClick={() => nav("/report/editor")}
           text={"글 작성"}
           color={"bg-pink-500 text-white"}
         />

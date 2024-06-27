@@ -24,6 +24,7 @@ function App() {
           <Route path="/tier" element={<Tier />} />
           <Route path="/report" element={<Report />} />
           <Route path="/report/:id" element={<ReportDetail />} />
+          <Route path="/report/editor" element={<ReportEditor />} />
           <Route path="/report/editor/:id" element={<ReportEditor />} />
           <Route path="/book-recommendation" element={<BookRecommendation />} />
           <Route path="/book/search" element={<BookSearch />} />
