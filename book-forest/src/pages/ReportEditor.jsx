@@ -51,12 +51,16 @@ const ReportEditor = () => {
           },
           {
             headers: {
-              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
         );
         console.log("독후감이 성공적으로 수정되었습니다.");
+        if (isEditMode) {
+          alert("독후감 성공적으로 수정되었습니다.");
+        } else {
+          alert("독후감이 성공적으로 생성되었습니다.");
+        }
         nav(`/report/${id}`); // 수정 후 리포트 상세 페이지로 이동
       }
     } catch (error) {
