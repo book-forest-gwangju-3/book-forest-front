@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUser } from "./../features/user/userSlice";
+import { setUser, setUserInfo } from "./../features/user/userSlice";
 import axios from "axios";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { LiaTimesCircleSolid } from "react-icons/lia";
@@ -53,11 +53,23 @@ const SignupForm = () => {
       const token = loginResponse.headers.authorization.replace("Bearer ", "")
       dispatch(setUser({ token }));
 
-      console.log('로그인 성공')
+      console.log("자동 로그인 완료");
+      return axios.get("http://localhost:8080/user/my-info", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    })
+    .then((userInfoResponse) => {
+      dispatch(setUserInfo(userInfoResponse.data));
+      console.log("사용자 정보 저장 완료");
       navigate("/");
     })
-    .catch(error => {
-      console.log('회원가입 또는 로그인 과정에서 오류가 발생했습니다 | ', error);
+    .catch((error) => {
+      console.log(
+        "다시 시도해주세요",
+        error
+      );
     });
     
   };
