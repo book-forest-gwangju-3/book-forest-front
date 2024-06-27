@@ -4,14 +4,17 @@ import { PiHeartStraight } from "react-icons/pi";
 import { PiHeartStraightFill } from "react-icons/pi";
 import { GoComment } from "react-icons/go";
 import Button from "../components/Button";
-import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { formatDateYMDHM } from "../utils/dateUtils";
+import { useState, useEffect, useCallback } from "react";
+import { useSelector } from "react-redux";
+
 const ReportDetail = () => {
   const { id } = useParams();
   const [report, setReport] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const isLogin = useSelector((state) => state.user.isLogin);
   const fetchReport = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -39,6 +42,9 @@ const ReportDetail = () => {
   if (isLoading) return <div>Loading...</div>;
   return (
     <main className="flex items-center justify-center">
+      {userInfo && report.user.username === userInfo.username && (
+        <button>삭제</button>
+      )}
       <div className="border bg-white mt-6 rounded-2xl p-4 w-full">
         <div className="flex items-center justify-between">
           <div className="gap-3.5 flex items-center">
