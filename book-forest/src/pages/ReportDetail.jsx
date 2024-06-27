@@ -1,21 +1,29 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { PiUserCircleLight } from "react-icons/pi";
 import { PiHeartStraight } from "react-icons/pi";
 import { PiHeartStraightFill } from "react-icons/pi";
 import { GoComment } from "react-icons/go";
 import Button from "../components/Button";
+import ReportReviewItem from "../features/reports/ReportReviewItem";
 import axios from "axios";
 import { formatDateYMDHM } from "../utils/dateUtils";
 import { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
-
+import { PiUserCircleLight } from "react-icons/pi";
+import { sortedByDateAsc } from "../utils/dateUtils";
 const ReportDetail = () => {
-  const { id } = useParams();
-  const [report, setReport] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const userInfo = useSelector((state) => state.user.userInfo);
-  const isLogin = useSelector((state) => state.user.isLogin); // 이따 이걸로 비로그인 댓글창 활성화 막아야됨
-  const token = useSelector((state) => state.user.token);
+  //
+  // 좋아요 기능
+  // 좋아요 수 렌더링
+  // 좋아요 버튼 토글로 아이콘 바뀌게
+  //
+  //
+  const { id } = useParams(); // 독후감 아이디
+  const [report, setReport] = useState(null); // 독후감 정보
+  const [isLoading, setIsLoading] = useState(true); // 로딩상태
+  const userInfo = useSelector((state) => state.user.userInfo); // 로그인 유저 정보
+  const isLogin = useSelector((state) => state.user.isLogin); // 로그인 상태
+  const token = useSelector((state) => state.user.token); // 로그인 토큰
+  const [commentContent, setCommentContent] = useState(""); // 유저가 입력한 댓글
   const nav = useNavigate();
   const fetchReport = useCallback(async () => {
     try {
@@ -49,13 +57,59 @@ const ReportDetail = () => {
     }
   };
 
-  // 로그인시 댓글 작성가능, 비로그인시 불가능
-  // 좋아요 버튼 토글로 아이콘 바뀌게
-  // 댓글 수 렌더링
-  // 자기가 쓴 댓글에는 수정, 삭제 버튼
+  // 댓글 상태 관리
+  const handleCommentChange = (e) => {
+    setCommentContent(e.target.value);
+  };
+
+  // 댓글 생성
+  const handleCommentSubmit = async () => {
+    if (!commentContent.trim()) return; // 빈 댓글 방지
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/book-reviews/${id}/comments`,
+        { content: commentContent },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // 새 댓글 기존 댓글에 추가해서 바로 추가되는것처럼 보이도록(로컬 상태에 추가)
+      setReport((prevReport) => ({
+        ...prevReport,
+        comments: [...prevReport.comments, response.data],
+      }));
+      // 입력 필드 초기화
+      setCommentContent("");
+    } catch (error) {
+      console.error("Error posting comment", error);
+    }
+  };
+
+  // 댓글 업데이트
+  const handleCommentUpdate = (updatedComment) => {
+    setReport((prevReport) => ({
+      ...prevReport,
+      comments: prevReport.comments.map((comment) =>
+        comment.id === updatedComment.id ? updatedComment : comment
+      ),
+    }));
+  };
+  // 댓글 삭제 업데이트
+  const handleCommentDelete = (deletedCommentId) => {
+    setReport((prevReport) => ({
+      ...prevReport,
+      comments: prevReport.comments.filter(
+        (comment) => comment.id !== deletedCommentId
+      ),
+    }));
+  };
+
   if (isLoading) return <div>Loading...</div>;
   return (
-    <div className="mt-6">
+    <div className="my-6">
       <div className="flex justify-between">
         <div>
           <Button
@@ -100,38 +154,46 @@ const ReportDetail = () => {
           <div className="h-16 border-b flex items-center justify-around">
             <div className="flex items-center gap-3">
               <GoComment className="text-xl" />
-              <div className="text-sm">10 Comments{report.id}</div>
+              <div className="text-sm">{report.comments.length} Comments</div>
             </div>
             <div className="flex items-center gap-3">
               <PiHeartStraight className="text-xl" />
               <div className="text-sm">5 Likes</div>
             </div>
           </div>
-          <div className="pt-4">
-            <div className="mb-4 flex">
-              <PiUserCircleLight className="w-10 h-10" />
-              <div className="ml-2 flex flex-col">
-                <b className="capitalize">최재원</b>
-                <time dateTime="06-08-21" className="text-gray-400 text-xs">
-                  24.06.23 12:04
-                </time>
-                <p className="whitespace-pre-wrap mt-2">잘 읽었습니다.</p>
-              </div>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center">
+          {sortedByDateAsc(report.comments).map((item) => (
+            <ReportReviewItem
+              key={item.id}
+              item={item}
+              reportId={id}
+              token={token}
+              onCommentUpdate={handleCommentUpdate}
+              onCommentDelete={handleCommentDelete}
+              loginUser={userInfo.username}
+            />
+          ))}
+
+          <form
+            onSubmit={handleCommentSubmit}
+            className="mt-4 flex items-center"
+          >
             <div className="ml-2 flex flex-col flex-grow mr-3">
-              <input
-                type="text"
-                className="bg-gray-100 rounded-xl w-full px-4 py-2 text-gray-800 placeholder-gray-500"
-                placeholder="댓글을 작성해주세요"
-              />
+              {isLogin && (
+                <input
+                  type="text"
+                  className="bg-gray-100 rounded-xl w-full px-4 py-2 text-gray-800 placeholder-gray-500"
+                  placeholder="댓글을 작성해주세요"
+                  value={commentContent}
+                  onChange={handleCommentChange}
+                />
+              )}
             </div>
             <Button
+              type="submit"
               text={"작성"}
               color={"bg-pink-500 text-white h-10 text-base"}
             />
-          </div>
+          </form>
         </div>
       </main>
     </div>
