@@ -11,7 +11,7 @@ const Header = () => {
   const isLogin = useSelector((state) => state.user.isLogin)
 
   const logOut = async () => {
-    console.log('로그아웃 axios 요청 not yet..')
+    console.log('로그아웃')
     dispatch(clearUser())
     navigate("/login")
   };
