@@ -4,6 +4,7 @@ import { formatDateYMDHM } from "../../utils/dateUtils";
 import { LuDelete } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const ReportReviewItem = ({
   item,
@@ -11,10 +12,10 @@ const ReportReviewItem = ({
   reportId,
   onCommentUpdate,
   onCommentDelete,
-  loginUser,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(item.content);
+  const userInfo = useSelector((state) => state.user.userInfo); // 로그인 유저 정보
   // 댓글 수정 시작
   const handleEdit = () => {
     setIsEditing(true);
@@ -24,7 +25,6 @@ const ReportReviewItem = ({
     setIsEditing(false);
     setEditedContent(item.content);
   };
-
   // 댓글 수정본 저장
   const handleSave = async () => {
     try {
@@ -97,7 +97,7 @@ const ReportReviewItem = ({
           ) : (
             <div>
               <p className="whitespace-pre-wrap">{item.content}</p>
-              {loginUser === item.user.username && (
+              {userInfo?.username === item.user.username && (
                 <div className="flex gap-1">
                   <button
                     onClick={handleEdit}

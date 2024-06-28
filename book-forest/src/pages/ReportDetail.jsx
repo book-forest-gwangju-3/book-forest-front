@@ -169,7 +169,6 @@ const ReportDetail = () => {
               token={token}
               onCommentUpdate={handleCommentUpdate}
               onCommentDelete={handleCommentDelete}
-              loginUser={userInfo.username}
             />
           ))}
 
