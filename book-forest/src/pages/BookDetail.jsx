@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import { PiUserCircleLight } from "react-icons/pi";
 import { PiHeartStraight } from "react-icons/pi";
 import { PiHeartStraightFill } from "react-icons/pi";
@@ -9,13 +8,49 @@ import { PiBookFill } from "react-icons/pi"; // 읽은 후
 import { PiPencilSimpleLine } from "react-icons/pi";
 import Button from "../components/Button";
 import img1 from "../assets/img/image1.png";
-import { useNavigate } from "react-router-dom";
+import { resolvePath, useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 const BookDetail = () => {
   // 상태에 따라서 책 읽기, 읽는 중, 읽음 버튼 다르게
   // 평점 입력 할지말지 다시 고민
   // 독후감 쓰기 입력시 이동
   const nav = useNavigate();
   const { id } = useParams();
+  const [book, setBook] = useState();
+  const [isLoading, setIsLoading] = useState(null);
+  const isLogin = useSelector((state) => state.user.isLogin); // 로그인 상태
+  const token = useSelector((state) => state.user.token); // 로그인 토큰
+  const userInfo = useSelector((state) => state.user.userInfo); // 로그인 유저 정보
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        setIsLoading(true);
+        let response;
+        if (isLogin) {
+          // 로그인 상태: 헤더에 토큰 넣어서 get 요청
+          response = await axios.get(`http://localhost:8080/books/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } else {
+          // 로그아웃 상태 : 그냥 get요청
+          response = await axios.get(`http://localhost:8080/books/${id}`);
+        }
+        setBook(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching book", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchBook();
+  }, [id, isLogin, token]);
+  if (isLoading || !book) return <div>Loading...</div>;
   return (
     <main className="h-full w-full">
       <Button
@@ -25,31 +60,29 @@ const BookDetail = () => {
       />
       <div className="border bg-white rounded-2xl p-6">
         <div className="flex items-center gap-10 mt-3">
-          <img src={img1} />
+          <img src={book.book.coverUrl} />
           <div className="gap-3.5 flex items-center">
             <div className="flex flex-col">
-              <h1 className="text-3xl mb-3">책 제목</h1>
-              <p className="text-gray-500 text-md">작가 : 최재원</p>
-              <p className="text-gray-500 text-md">출간일 : 24.03.22</p>
-              <p className="text-gray-500 text-md">페이지 수 : 502</p>
-              <p className="text-gray-500 text-md">출판사 : 싸피</p>
-              <p className="text-gray-500 text-md">가격 : 33200 </p>
-              <p className="text-gray-500 text-md">카테고리</p>
+              <h1 className="text-3xl mb-3">{book.book.title}</h1>
+              <p className="text-gray-500 text-md">작가 : {book.book.author}</p>
+              <p className="text-gray-500 text-md">
+                출간일 : {book.book.pubDate}
+              </p>
+              <p className="text-gray-500 text-md">
+                총 페이지 수 : {book.book.page}
+              </p>
+              <p className="text-gray-500 text-md">
+                출판사 : {book.book.publisher}
+              </p>
+              <p className="text-gray-500 text-md">
+                가격 : {book.book.standardPrice}
+              </p>
+              <p className="text-gray-500 text-md">{book.book.categoryName}</p>
             </div>
           </div>
         </div>
         <div className="mt-5 flex gap-2 justify-center border-b pb-4 flex-wrap">
-          <p>
-            컬트 내부에서는 무슨 일이 벌어지는가 컬트 집단을 외부에서 바라보면
-            그저 기괴할 뿐이다. 컬트 지도자의 궤변과 권능, 집단 문화의 폭력성과
-            비인간성, 추종자의 비논리적 믿음, 모든 것이 총체적으로 얽혀 거대한
-            거짓말 같아 보인다. 그러나 집단 광기는 현재 우리의 현실 안에도
-            모세혈관처럼 퍼져있다. 이 작은 나라에서 최근 몇 년 사이에 화제 된
-            사이비 종교의 이름만 몇 개인지. 혼란한 현실을 구체적으로 살펴보는
-            데에 이 책이 도움 될 수 있을 것 같다. 사람들은 왜 컬트에 빠질까. 그
-            내부에서는 실제로 무슨 일이 벌어질까? 이 책은 전 세계의 이목을
-            집중시킨 악명 높고 기괴한 컬트 집단에 대해 얘기한다.
-          </p>
+          <p>{book.book.description}</p>
         </div>
         <div className="h-16 border-b flex items-center justify-around gap-6">
           <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
@@ -62,7 +95,7 @@ const BookDetail = () => {
           </div>
           <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
             <GoComment className="text-xl" />
-            <div className="text-sm">10 Comments</div>
+            <div className="text-sm">{book.quickReviews.length} Comments</div>
           </div>
           <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
             <PiHeartStraight className="text-xl" />

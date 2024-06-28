@@ -6,7 +6,7 @@ import Button from "../components/Button";
 import ReportReviewItem from "../features/reports/ReportReviewItem";
 import axios from "axios";
 import { formatDateYMDHM } from "../utils/dateUtils";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { PiUserCircleLight } from "react-icons/pi";
 import { sortedByDateAsc } from "../utils/dateUtils";
@@ -25,22 +25,23 @@ const ReportDetail = () => {
   const token = useSelector((state) => state.user.token); // 로그인 토큰
   const [commentContent, setCommentContent] = useState(""); // 유저가 입력한 댓글
   const nav = useNavigate();
-  const fetchReport = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(
-        `http://localhost:8080/book-reviews/${id}`
-      );
-      setReport(response.data.bookReview);
-    } catch (error) {
-      console.error("Error fetching report", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id]);
   useEffect(() => {
+    const fetchReport = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(
+          `http://localhost:8080/book-reviews/${id}`
+        );
+        setReport(response.data.bookReview);
+      } catch (error) {
+        console.error("Error fetching report", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchReport();
-  }, [fetchReport]);
+  }, [id]);
 
   // 독후감 삭제
   const handleDelete = async () => {
