@@ -6,13 +6,28 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { sortedByDateDesc } from "../../utils/dateUtils";
+
 const ReportList = () => {
   const [reports, setReports] = useState([]); // 독후감 목록
   const [searchTerm, setSearchTerm] = useState(""); // 독후감 검색어
+  const [searchedReports, setSearchedReports] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // 페이징
+  const [reportsPerPage] = useState(10); // 한 페이지당 보여줄 독후감 수
   const nav = useNavigate();
+
   useEffect(() => {
     fetchReports();
   }, []); // 마운트 될때만 실행
+
+  useEffect(() => {
+    const searched = reports.filter(
+      (report) =>
+        report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        report.user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchedReports(searched);
+    setCurrentPage(1); // 검색 시 첫 페이지로 리셋
+  }, [searchTerm, reports]);
 
   // 독후감 목록 불러오는 함수
   const fetchReports = async () => {
@@ -25,12 +40,26 @@ const ReportList = () => {
     }
   };
 
-  // 독후감 검색 함수
-  const searchedReports = reports.filter(
-    (report) =>
-      report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  // 페이징
+  const indexOfLastReport = currentPage * reportsPerPage;
+  const indexOfFirstReport = indexOfLastReport - reportsPerPage;
+  const currentReports = searchedReports.slice(
+    indexOfFirstReport,
+    indexOfLastReport
   );
+
+  // 페이지 수 계산
+  const pageNumbers = [];
+  for (
+    let i = 1;
+    i <= Math.ceil(searchedReports.length / reportsPerPage);
+    i++
+  ) {
+    pageNumbers.push(i);
+  }
+
+  // 페이지 변경 함수
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // tailwind
   const containerClass = "my-10";
@@ -48,6 +77,7 @@ const ReportList = () => {
     "w-5 h-5 text-sm text-center hover:text-blue-500";
   const paginationNumberClass =
     "cursor-pointer mx-2 text-sm hover:text-blue-500";
+
   return (
     <div className={containerClass}>
       {/* 검색폼 */}
@@ -71,21 +101,43 @@ const ReportList = () => {
           </tr>
         </thead>
         <tbody className={tableBodyWrapperClass}>
-          {searchedReports.map((item) => {
-            return <ReportListItem key={item.id} item={item} />;
-          })}
+          {currentReports.map((item) => (
+            <ReportListItem key={item.id} item={item} />
+          ))}
         </tbody>
       </table>
       <div className="flex">
         {/* 페이지네이션 */}
         <div className={paginationWrapperClass}>
-          <button className={paginationButtonClass}>&lt;</button>
-          <p className={paginationNumberClass}>1</p>
-          <p className={paginationNumberClass}>2</p>
-          <p className={paginationNumberClass}>3</p>
-          <p className={paginationNumberClass}>4</p>
-          <p className={paginationNumberClass}>5</p>
-          <button className={paginationButtonClass}>&gt;</button>
+          <button
+            onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+            className={paginationButtonClass}
+          >
+            &lt;
+          </button>
+          {pageNumbers.map((number) => (
+            <p
+              key={number}
+              className={`${paginationNumberClass} ${
+                currentPage === number ? "text-blue-500" : ""
+              }`}
+              onClick={() => paginate(number)}
+            >
+              {number}
+            </p>
+          ))}
+          <button
+            onClick={() =>
+              paginate(
+                currentPage < pageNumbers.length
+                  ? currentPage + 1
+                  : pageNumbers.length
+              )
+            }
+            className={paginationButtonClass}
+          >
+            &gt;
+          </button>
         </div>
         <Button
           onClick={() => nav("/report/editor")}
@@ -96,4 +148,5 @@ const ReportList = () => {
     </div>
   );
 };
+
 export default ReportList;
