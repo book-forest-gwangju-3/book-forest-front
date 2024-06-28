@@ -7,7 +7,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { sortedByDateDesc } from "../../utils/dateUtils";
 const ReportList = () => {
-  const [reports, setReports] = useState([]);
+  const [reports, setReports] = useState([]); // 독후감 목록
+  const [searchTerm, setSearchTerm] = useState(""); // 독후감 검색어
   const nav = useNavigate();
   useEffect(() => {
     fetchReports();
@@ -23,6 +24,13 @@ const ReportList = () => {
       console.error("Error fetching reports", error);
     }
   };
+
+  // 독후감 검색 함수
+  const searchedReports = reports.filter(
+    (report) =>
+      report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // tailwind
   const containerClass = "my-10";
@@ -44,7 +52,11 @@ const ReportList = () => {
     <div className={containerClass}>
       {/* 검색폼 */}
       <div className={inputFilterWrapperClass}>
-        <SearchForm text={"검색어를 입력해주세요"} />
+        <SearchForm
+          text={"검색어를 입력해주세요"}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         {/* 필터 */}
         <ReportFilterButton />
       </div>
@@ -59,7 +71,7 @@ const ReportList = () => {
           </tr>
         </thead>
         <tbody className={tableBodyWrapperClass}>
-          {reports.map((item) => {
+          {searchedReports.map((item) => {
             return <ReportListItem key={item.id} item={item} />;
           })}
         </tbody>
