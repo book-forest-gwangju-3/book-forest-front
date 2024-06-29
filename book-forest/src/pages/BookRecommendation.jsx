@@ -1,5 +1,6 @@
 import SectionTitle from "../components/SectionTitle";
 import Slider from "../components/Slider";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { useEffect, useState } from "react";
 import axios from "axios";
 const BookRecommendation = () => {
@@ -41,7 +42,7 @@ const BookRecommendation = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   const contentWrapperClass = "mb-12";
