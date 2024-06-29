@@ -13,6 +13,7 @@ const ReportList = () => {
   const [searchedReports, setSearchedReports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // 페이징
   const [reportsPerPage] = useState(10); // 한 페이지당 보여줄 독후감 수
+  const [sortOption, setSortOption] = useState("latest"); // 필터링
   const nav = useNavigate();
 
   useEffect(() => {
@@ -25,20 +26,42 @@ const ReportList = () => {
         report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         report.user.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setSearchedReports(searched);
+    const sorted = sortReports(searched, sortOption);
+    setSearchedReports(sorted);
     setCurrentPage(1); // 검색 시 첫 페이지로 리셋
-  }, [searchTerm, reports]);
+  }, [searchTerm, reports, sortOption]);
 
   // 독후감 목록 불러오는 함수
   const fetchReports = async () => {
     try {
       const response = await axios.get("http://localhost:8080/book-reviews");
-      const sortedReports = sortedByDateDesc(response.data.bookReviews); // 최신순으로 정렬
-      setReports(sortedReports);
+      const initialSortedReports = sortReports(
+        response.data.bookReviews,
+        sortOption
+      );
+      setReports(initialSortedReports);
       console.log(response.data.bookReviews);
     } catch (error) {
       console.error("Error fetching reports", error);
     }
+  };
+  // 필터링
+  const sortReports = (reportsToSort, option) => {
+    switch (option) {
+      case "latest":
+        return sortedByDateDesc(reportsToSort);
+      case "mostLikes":
+        return [...reportsToSort].sort((a, b) => b.likeCount - a.likeCount);
+      case "mostComments":
+        return [...reportsToSort].sort(
+          (a, b) => b.commentCount - a.commentCount
+        );
+      default:
+        return reportsToSort;
+    }
+  };
+  const handleSortChange = (option) => {
+    setSortOption(option);
   };
 
   // 페이징
@@ -89,7 +112,10 @@ const ReportList = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         {/* 필터 */}
-        <ReportFilterButton />
+        <ReportFilterButton
+          sortOption={sortOption}
+          onSortChange={handleSortChange}
+        />
       </div>
 
       {/* 테이블 */}
