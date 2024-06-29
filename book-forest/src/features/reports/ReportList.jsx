@@ -35,6 +35,7 @@ const ReportList = () => {
       const response = await axios.get("http://localhost:8080/book-reviews");
       const sortedReports = sortedByDateDesc(response.data.bookReviews); // 최신순으로 정렬
       setReports(sortedReports);
+      console.log(response.data.bookReviews);
     } catch (error) {
       console.error("Error fetching reports", error);
     }

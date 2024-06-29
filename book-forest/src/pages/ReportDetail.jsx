@@ -29,9 +29,21 @@ const ReportDetail = () => {
     const fetchReport = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(
-          `http://localhost:8080/book-reviews/${id}`
-        );
+        let response;
+        if (isLogin) {
+          response = await axios.get(
+            `http://localhost:8080/book-reviews/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        } else {
+          response = await axios.get(
+            `http://localhost:8080/book-reviews/${id}`
+          );
+        }
         setReport(response.data.bookReview);
       } catch (error) {
         console.error("Error fetching report", error);
@@ -41,7 +53,7 @@ const ReportDetail = () => {
     };
 
     fetchReport();
-  }, [id]);
+  }, [id, isLogin, token]);
 
   // 독후감 삭제
   const handleDelete = async () => {
@@ -109,6 +121,36 @@ const ReportDetail = () => {
     }));
   };
 
+  // 좋아요 토글
+  const toggleLike = async () => {
+    if (!isLogin) {
+      // 비로그인 좋아요 기능 막기
+      alert("로그인이 필요한 기능입니다.");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/book-reviews/${id}/likes`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Optimistic UI update
+      setReport((prevReport) => ({
+        ...prevReport,
+        liked: !prevReport.liked,
+        likeCount: prevReport.liked
+          ? prevReport.likeCount - 1
+          : prevReport.likeCount + 1,
+      }));
+    } catch (error) {
+      console.error("Error toggling like", error);
+    }
+  };
+
   if (isLoading) return <div>Loading...</div>;
   return (
     <div className="my-6">
@@ -159,8 +201,19 @@ const ReportDetail = () => {
               <div className="text-sm">{report.comments.length} Comments</div>
             </div>
             <div className="flex items-center gap-3">
-              <PiHeartStraight className="text-xl" />
-              <div className="text-sm">5 Likes</div>
+              {report.liked ? (
+                <PiHeartStraightFill
+                  onClick={toggleLike}
+                  className="text-xl text-red-500 cursor-pointer hover:scale-110"
+                />
+              ) : (
+                <PiHeartStraight
+                  onClick={toggleLike}
+                  className="text-xl cursor-pointer hover:scale-110"
+                />
+              )}
+
+              <div className="text-sm">{report.likeCount} Likes</div>
             </div>
           </div>
           {sortedByDateAsc(report.comments).map((item) => (
