@@ -4,6 +4,7 @@ import { PiHeartStraightFill } from "react-icons/pi";
 import { GoComment } from "react-icons/go";
 import Button from "../components/Button";
 import ReportReviewItem from "../features/reports/ReportReviewItem";
+import LoadingSpinner from "../components/LoadingSpinner";
 import axios from "axios";
 import { formatDateYMDHM } from "../utils/dateUtils";
 import { useState, useEffect, useRef } from "react";
@@ -161,7 +162,7 @@ const ReportDetail = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingSpinner />;
   return (
     <div className="my-6">
       <div className="flex justify-between">
