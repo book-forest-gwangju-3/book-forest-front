@@ -58,13 +58,14 @@ const ReportDetail = () => {
     }
   };
 
-  // 댓글 상태 관리
+  // 댓글 압룍 상태 관리
   const handleCommentChange = (e) => {
     setCommentContent(e.target.value);
   };
 
   // 댓글 생성
-  const handleCommentSubmit = async () => {
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
     if (!commentContent.trim()) return; // 빈 댓글 방지
     try {
       const response = await axios.post(
@@ -77,7 +78,7 @@ const ReportDetail = () => {
         }
       );
 
-      // 새 댓글 기존 댓글에 추가해서 바로 추가되는것처럼 보이도록(로컬 상태에 추가)
+      // 새 댓글 기존 댓글에 추가해서 바로 추가되는것처럼 보이도록(Optimistic UI Update)
       setReport((prevReport) => ({
         ...prevReport,
         comments: [...prevReport.comments, response.data],
@@ -89,7 +90,7 @@ const ReportDetail = () => {
     }
   };
 
-  // 댓글 업데이트
+  // 댓글 수정(Optimistic UI Update)
   const handleCommentUpdate = (updatedComment) => {
     setReport((prevReport) => ({
       ...prevReport,
@@ -98,7 +99,7 @@ const ReportDetail = () => {
       ),
     }));
   };
-  // 댓글 삭제 업데이트
+  // 댓글 삭제(Optimistic UI Update)
   const handleCommentDelete = (deletedCommentId) => {
     setReport((prevReport) => ({
       ...prevReport,
@@ -173,12 +174,12 @@ const ReportDetail = () => {
             />
           ))}
 
-          <form
-            onSubmit={handleCommentSubmit}
-            className="mt-4 flex items-center"
-          >
-            <div className="ml-2 flex flex-col flex-grow mr-3">
-              {isLogin && (
+          {isLogin && (
+            <form
+              onSubmit={handleCommentSubmit}
+              className="mt-4 flex items-center"
+            >
+              <div className="ml-2 flex flex-col flex-grow mr-3">
                 <input
                   type="text"
                   className="bg-gray-100 rounded-xl w-full px-4 py-2 text-gray-800 placeholder-gray-500"
@@ -186,14 +187,14 @@ const ReportDetail = () => {
                   value={commentContent}
                   onChange={handleCommentChange}
                 />
-              )}
-            </div>
-            <Button
-              type="submit"
-              text={"작성"}
-              color={"bg-pink-500 text-white h-10 text-base"}
-            />
-          </form>
+              </div>
+              <Button
+                type="submit"
+                text={"작성"}
+                color={"bg-pink-500 text-white h-10 text-base"}
+              />
+            </form>
+          )}
         </div>
       </main>
     </div>

@@ -7,10 +7,11 @@ import { PiBookOpen } from "react-icons/pi"; // 읽는 중
 import { PiBookFill } from "react-icons/pi"; // 읽은 후
 import { PiPencilSimpleLine } from "react-icons/pi";
 import Button from "../components/Button";
-import img1 from "../assets/img/image1.png";
-import { resolvePath, useNavigate, useParams } from "react-router-dom";
+import BookReviewItem from "../features/books/BookReviewItem";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { sortedByDateAsc } from "../utils/dateUtils";
 import axios from "axios";
 const BookDetail = () => {
   // 상태에 따라서 책 읽기, 읽는 중, 읽음 버튼 다르게
@@ -23,7 +24,7 @@ const BookDetail = () => {
   const isLogin = useSelector((state) => state.user.isLogin); // 로그인 상태
   const token = useSelector((state) => state.user.token); // 로그인 토큰
   const userInfo = useSelector((state) => state.user.userInfo); // 로그인 유저 정보
-
+  const [commentContent, setCommentContent] = useState(""); // 유저가 입력한 댓글
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -50,9 +51,64 @@ const BookDetail = () => {
     };
     fetchBook();
   }, [id, isLogin, token]);
+
+  // 댓글 입력 상태 관리
+  const handleCommentChange = (e) => {
+    setCommentContent(e.target.value);
+  };
+
+  //댓글 생성
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!commentContent.trim()) return; // 빈 댓글 방지
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/books/quick-reviews`,
+        { bookId: id, content: commentContent },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // 새 댓글을 기존 댓글 목록에 추가(Optimistic UI Update)
+      setBook((prevBook) => ({
+        ...prevBook,
+        quickReviews: [...prevBook.quickReviews, response.data],
+      }));
+      console.log(book);
+      // 입력 필드 초기화
+      setCommentContent("");
+    } catch (error) {
+      console.error("Error posting comment", error);
+    }
+  };
+
+  // 댓글 수정(Optimistic UI Update)
+  const handleCommentUpdate = (updatedComment) => {
+    setBook((prevReport) => ({
+      ...prevReport,
+      quickReviews: prevReport.quickReviews.map((comment) =>
+        comment.quickReviewId === updatedComment.quickReviewId
+          ? updatedComment
+          : comment
+      ),
+    }));
+  };
+
+  // 댓글 삭제(Optimistic UI Update)
+  const handleCommentDelete = (deletedCommentId) => {
+    setBook((prevBook) => ({
+      ...prevBook,
+      quickReviews: prevBook.quickReviews.filter(
+        (comment) => comment.quickReviewId !== deletedCommentId
+      ),
+    }));
+  };
+
   if (isLoading || !book) return <div>Loading...</div>;
   return (
-    <main className="h-full w-full">
+    <main className="h-full w-full mb-6">
       <Button
         onClick={() => nav(-1)}
         text={"목록"}
@@ -102,31 +158,38 @@ const BookDetail = () => {
             <div className="text-sm">5 Likes</div>
           </div>
         </div>
-        <div className="pt-4">
-          <div className="mb-4 flex">
-            <PiUserCircleLight className="w-10 h-10" />
-            <div className="ml-2 flex flex-col">
-              <b className="capitalize">최재원</b>
-              <time dateTime="06-08-21" className="text-gray-400 text-xs">
-                24.06.23 12:04
-              </time>
-              <p className="whitespace-pre-wrap mt-2">잘 읽었습니다.</p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4 flex items-center">
-          <div className="ml-2 flex flex-col flex-grow mr-3">
-            <input
-              type="text"
-              className="bg-gray-100 rounded-xl w-full px-4 py-2 text-gray-800 placeholder-gray-500"
-              placeholder="댓글을 작성해주세요"
-            />
-          </div>
-          <Button
-            text={"작성"}
-            color={"bg-pink-500 text-white h-10 text-base"}
+        {sortedByDateAsc(book.quickReviews).map((item) => (
+          <BookReviewItem
+            key={item.quickReviewId}
+            item={item}
+            token={token}
+            onCommentDelete={handleCommentDelete}
+            onCommentUpdate={handleCommentUpdate}
           />
-        </div>
+        ))}
+        {isLogin && (
+          <form
+            onSubmit={handleCommentSubmit}
+            className="mt-4 flex items-center"
+          >
+            <div className="ml-2 flex flex-col flex-grow mr-3">
+              {isLogin && (
+                <input
+                  type="text"
+                  className="bg-gray-100 rounded-xl w-full px-4 py-2 text-gray-800 placeholder-gray-500"
+                  placeholder="댓글을 작성해주세요"
+                  value={commentContent}
+                  onChange={handleCommentChange}
+                />
+              )}
+            </div>
+            <Button
+              type="submit"
+              text={"작성"}
+              color={"bg-pink-500 text-white h-10 text-base"}
+            />
+          </form>
+        )}
       </div>
     </main>
   );
