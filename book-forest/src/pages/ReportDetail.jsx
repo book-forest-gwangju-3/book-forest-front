@@ -6,7 +6,7 @@ import Button from "../components/Button";
 import ReportReviewItem from "../features/reports/ReportReviewItem";
 import axios from "axios";
 import { formatDateYMDHM } from "../utils/dateUtils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { PiUserCircleLight } from "react-icons/pi";
 import { sortedByDateAsc } from "../utils/dateUtils";
@@ -24,6 +24,7 @@ const ReportDetail = () => {
   const isLogin = useSelector((state) => state.user.isLogin); // 로그인 상태
   const token = useSelector((state) => state.user.token); // 로그인 토큰
   const [commentContent, setCommentContent] = useState(""); // 유저가 입력한 댓글
+  const commentInputRef = useRef(null); // 댓글 입력폼 참조
   const nav = useNavigate();
   useEffect(() => {
     const fetchReport = async () => {
@@ -151,6 +152,15 @@ const ReportDetail = () => {
     }
   };
 
+  // 댓글 아이콘 클릭 시 댓글 입력창 포커스
+  const handleCommentClick = () => {
+    if (isLogin) {
+      commentInputRef.current?.focus();
+    } else {
+      alert("댓글을 작성하려면 로그인이 필요합니다.");
+    }
+  };
+
   if (isLoading) return <div>Loading...</div>;
   return (
     <div className="my-6">
@@ -196,21 +206,21 @@ const ReportDetail = () => {
             <p className="text-left">{report.content}</p>
           </div>
           <div className="h-16 border-b flex items-center justify-around">
-            <div className="flex items-center gap-3">
+            <div
+              onClick={handleCommentClick}
+              className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300"
+            >
               <GoComment className="text-xl" />
               <div className="text-sm">{report.comments.length} Comments</div>
             </div>
-            <div className="flex items-center gap-3">
+            <div
+              onClick={toggleLike}
+              className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300"
+            >
               {report.liked ? (
-                <PiHeartStraightFill
-                  onClick={toggleLike}
-                  className="text-xl text-red-500 cursor-pointer hover:scale-110"
-                />
+                <PiHeartStraightFill className="text-xl text-red-500" />
               ) : (
-                <PiHeartStraight
-                  onClick={toggleLike}
-                  className="text-xl cursor-pointer hover:scale-110"
-                />
+                <PiHeartStraight className="text-xl cursor-pointer" />
               )}
 
               <div className="text-sm">{report.likeCount} Likes</div>
@@ -234,6 +244,7 @@ const ReportDetail = () => {
             >
               <div className="ml-2 flex flex-col flex-grow mr-3">
                 <input
+                  ref={commentInputRef}
                   type="text"
                   className="bg-gray-100 rounded-xl w-full px-4 py-2 text-gray-800 placeholder-gray-500"
                   placeholder="댓글을 작성해주세요"
