@@ -10,7 +10,10 @@ const ReportListItem = ({ item }) => {
   const tableBodyWriterClass = "px-4 py-4";
   return (
     <tr onClick={() => nav(`/report/${item.id}`)} className={tableBodyClass}>
-      <td className={tableBodyTitleClass}>{item.title}</td>
+      <td className={tableBodyTitleClass}>
+        {item.title}
+        <span className="ml-1 text-pink-400">[{item.commentCount}]</span>
+      </td>
       <td className={tableBodyWriterClass}>{item.user.username}</td>
       <td className={tableBodyWrapperClass}>{formatDateYMD(item.createdAt)}</td>
     </tr>
