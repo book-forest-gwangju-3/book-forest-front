@@ -12,7 +12,7 @@ const Home = () => {
         <Route path="/my-report" element={<HomeMyReport />} />
       </Routes>
     </>
-  )
+  );
 };
 
 export default Home;
