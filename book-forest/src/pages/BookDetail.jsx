@@ -1,15 +1,16 @@
-import { PiUserCircleLight } from "react-icons/pi";
-import { PiHeartStraight } from "react-icons/pi";
-import { PiHeartStraightFill } from "react-icons/pi";
 import { GoComment } from "react-icons/go";
-import { PiBookLight } from "react-icons/pi"; // 읽기 전
-import { PiBookOpen } from "react-icons/pi"; // 읽는 중
-import { PiBookFill } from "react-icons/pi"; // 읽은 후
-import { PiPencilSimpleLine } from "react-icons/pi";
+import {
+  PiBookLight,
+  PiBookOpen,
+  PiBookFill,
+  PiPencilSimpleLine,
+  PiHeartStraightFill,
+  PiHeartStraight,
+} from "react-icons/pi";
 import Button from "../components/Button";
 import BookReviewItem from "../features/books/BookReviewItem";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { sortedByDateAsc } from "../utils/dateUtils";
 import axios from "axios";
@@ -25,6 +26,7 @@ const BookDetail = () => {
   const token = useSelector((state) => state.user.token); // 로그인 토큰
   const userInfo = useSelector((state) => state.user.userInfo); // 로그인 유저 정보
   const [commentContent, setCommentContent] = useState(""); // 유저가 입력한 댓글
+  const commentInputRef = useRef(null); // 댓글 입력폼 참조
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -106,6 +108,52 @@ const BookDetail = () => {
     }));
   };
 
+  // 좋아요 상태 확인하는 함수
+  const isLikedByUser = () => {
+    if (!isLogin || !userInfo || !book) return false;
+    return book.likedUsers.some((user) => user.id === userInfo.id);
+  };
+
+  // 좋아요 토글
+  const toggleLike = async () => {
+    if (!isLogin) {
+      alert("로그인이 필요한 기능입니다.");
+      return;
+    }
+    // Optimistic UI Update
+    setBook((prevBook) => ({
+      ...prevBook,
+      likedUsers: isLikedByUser()
+        ? prevBook.likedUsers.filter((user) => user.id !== userInfo.id)
+        : [
+            ...prevBook.likedUsers,
+            { id: userInfo.id, username: userInfo.username },
+          ],
+    }));
+    try {
+      await axios.post(
+        "http://localhost:8080/books/like",
+        { bookId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error toggling like", error);
+    }
+  };
+
+  // 댓글 아이콘 클릭 시 댓글 입력창 포커스
+  const handleCommentClick = () => {
+    if (isLogin) {
+      commentInputRef.current?.focus();
+    } else {
+      alert("댓글을 작성하려면 로그인이 필요합니다.");
+    }
+  };
+
   if (isLoading || !book) return <div>Loading...</div>;
   return (
     <main className="h-full w-full mb-6">
@@ -142,20 +190,49 @@ const BookDetail = () => {
         </div>
         <div className="h-16 border-b flex items-center justify-around gap-6">
           <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
-            <PiBookLight className="text-xl" />
-            <div className="text-sm">책 읽기</div>
+            {book.myReadStatus === null && (
+              <>
+                <PiBookLight className="text-xl" />
+                <div className="text-sm">책 읽기</div>
+              </>
+            )}
+            {book.myReadStatus?.readCompleted === false && (
+              <>
+                <PiBookOpen className="text-xl" />
+                <div className="text-sm">읽는 중</div>
+              </>
+            )}
+            {book.myReadStatus?.readCompleted === true && (
+              <>
+                <PiBookFill className="text-xl" />
+                <div className="text-sm">읽은 책</div>
+              </>
+            )}
           </div>
-          <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
+          <div
+            onClick={() => nav("/report/editor")}
+            className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300"
+          >
             <PiPencilSimpleLine className="text-xl" />
             <div className="text-sm">독후감 쓰기</div>
           </div>
-          <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
+          <div
+            onClick={handleCommentClick}
+            className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300"
+          >
             <GoComment className="text-xl" />
             <div className="text-sm">{book.quickReviews.length} Comments</div>
           </div>
-          <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
-            <PiHeartStraight className="text-xl" />
-            <div className="text-sm">5 Likes</div>
+          <div
+            onClick={toggleLike}
+            className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300"
+          >
+            {isLikedByUser() ? (
+              <PiHeartStraightFill className="text-xl text-red-500" />
+            ) : (
+              <PiHeartStraight className="text-xl" />
+            )}
+            <div className="text-sm">{book.likedUsers.length} Likes</div>
           </div>
         </div>
         {sortedByDateAsc(book.quickReviews).map((item) => (
@@ -175,6 +252,7 @@ const BookDetail = () => {
             <div className="ml-2 flex flex-col flex-grow mr-3">
               {isLogin && (
                 <input
+                  ref={commentInputRef}
                   type="text"
                   className="bg-gray-100 rounded-xl w-full px-4 py-2 text-gray-800 placeholder-gray-500"
                   placeholder="댓글을 작성해주세요"
