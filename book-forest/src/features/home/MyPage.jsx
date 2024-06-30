@@ -1,12 +1,14 @@
 import HeatMap from "./Heatmap";
 import SectionTitle from "../../components/SectionTitle";
+import Slider from "../../components/Slider";
+import ReadingModal from "./ReadingModal";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Slider from "../../components/Slider";
 const MyPage = ({ commitData, isLoading }) => {
   const [readingBooks, setReadingBooks] = useState([]); // 읽고 있는 책
   const [completedBooks, setCompletedBooks] = useState([]); // 다 읽은 책
+  const [modal, setModal] = useState(false); // 모달창
   const token = useSelector((state) => state.user.token);
   const userInfo = useSelector((state) => state.user.userInfo);
 
@@ -32,6 +34,10 @@ const MyPage = ({ commitData, isLoading }) => {
     fetchReadingBooks();
   }, [userInfo]);
 
+  const handleBookClick = (book) => {
+    setModal(book);
+  };
+
   return (
     <main>
       <HeatMap commitData={commitData} isLoading={isLoading} />
@@ -39,12 +45,14 @@ const MyPage = ({ commitData, isLoading }) => {
       <Slider
         item={readingBooks}
         message={"현재 독서 진행중인 책이 없습니다."}
+        reading={handleBookClick}
       />
       <SectionTitle text={"읽은 도서"} />
       <Slider
         item={completedBooks}
         message={"아직 독서를 완료한 책이 없습니다."}
       />
+      {modal && <ReadingModal book={modal} onClose={() => setModal(false)} />}
     </main>
   );
 };

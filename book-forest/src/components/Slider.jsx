@@ -2,7 +2,7 @@ import React from "react";
 import { useRef } from "react";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
-const Slider = ({ item, message }) => {
+const Slider = ({ item, message, reading }) => {
   const ref = useRef(null);
   const nav = useNavigate();
   const containerClass = "flex items-center justify-center space-x-4";
@@ -35,7 +35,9 @@ const Slider = ({ item, message }) => {
               src={book.coverUrl}
               alt={`Book cover ${index + 1}`}
               className={imgClass}
-              onClick={() => nav(`/book/${book.id}`)}
+              onClick={() =>
+                reading ? reading(book) : nav(`/book/${book.id}`)
+              }
             />
           ))
         ) : (
