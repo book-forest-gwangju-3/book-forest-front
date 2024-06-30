@@ -19,7 +19,7 @@ function App() {
       <div style={{ width: "1200px", margin: "0 auto" }}>
         <Routes>
           <Route
-            path="/"
+            path="/*"
             element={
               <ProtectedRoute>
                 <Home />
