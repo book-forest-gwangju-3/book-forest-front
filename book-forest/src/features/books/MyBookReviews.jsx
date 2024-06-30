@@ -8,6 +8,9 @@ const MyBookReview = () => {
   const userId = useSelector((state) => state.user.userInfo.id);
 
   useEffect(() => {
+    console.log(userId)
+    console.log(token)
+
     const fetchBookReviews = async () => {
       if (token && userId) {
         try {
@@ -33,9 +36,9 @@ const MyBookReview = () => {
         <p>아직 작성한 독후감이 없습니다.</p>
       ) : (
         <ul>
-          {bookReviews.map((review) => (
+          {/* {bookReviews.map((review) => (
             <li key={review.id}>{review.title}</li>
-          ))}
+          ))} */}
         </ul>
       )}
     </div>

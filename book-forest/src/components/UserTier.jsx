@@ -2,11 +2,13 @@ import { FaTrophy } from "react-icons/fa";
 
 const UserTier = () => {
   // axios로 로그인한 유저 데이터 받아오기
+
   
   // 임시 데이터
   const data = {
     nickname: 'NickName',
     rank: 32,
+    tier: 'BRONZE',
     percent: 25,
     point: 1020,
   }
@@ -25,6 +27,7 @@ const UserTier = () => {
         <div>{data.nickname}</div>
       </div>
       <div className={right}>
+        <div className="mr-8 text-color-4 font-bold">{data.tier}</div>
         <div className="mr-8">상위 {data.percent} %</div>
         <div>{data.point} p</div>
       </div>
