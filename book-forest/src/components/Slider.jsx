@@ -2,7 +2,7 @@ import React from "react";
 import { useRef } from "react";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
-const Slider = ({ item }) => {
+const Slider = ({ item, message }) => {
   const ref = useRef(null);
   const nav = useNavigate();
   const containerClass = "flex items-center justify-center space-x-4";
@@ -18,13 +18,17 @@ const Slider = ({ item }) => {
   const nextButton = () => {
     if (ref.current) ref.current.scrollLeft += 192; // 스크롤 오른쪽으로 이동
   };
+
+  const hasItems = item?.items && item.items.length > 0;
   return (
     <div className={containerClass}>
-      <button onClick={prevButton} className={buttonClass}>
-        <SlArrowLeft />
-      </button>
+      {hasItems && (
+        <button onClick={prevButton} className={buttonClass}>
+          <SlArrowLeft />
+        </button>
+      )}
       <div ref={ref} className={sliderClass}>
-        {item.items.length > 0 ? (
+        {hasItems ? (
           item.items.map((book, index) => (
             <img
               key={book.id}
@@ -35,12 +39,14 @@ const Slider = ({ item }) => {
             />
           ))
         ) : (
-          <p>No books available</p>
+          <p className="my-20">{message}</p>
         )}
       </div>
-      <button onClick={nextButton} className={buttonClass}>
-        <SlArrowRight />
-      </button>
+      {hasItems && (
+        <button onClick={nextButton} className={buttonClass}>
+          <SlArrowRight />
+        </button>
+      )}
     </div>
   );
 };
