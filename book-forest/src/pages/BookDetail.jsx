@@ -154,6 +154,30 @@ const BookDetail = () => {
     }
   };
 
+  // 책 읽기 시작
+  const handleStartReading = async () => {
+    if (!isLogin) {
+      alert("로그인이 필요한 기능입니다.");
+      return;
+    }
+
+    try {
+      await axios.post(
+        `http://localhost:8080/books/${id}/start`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      nav("/");
+    } catch (error) {
+      console.error("Error starting book", error);
+      alert("책 읽기를 시작하는 중 문제가 발생했습니다.");
+    }
+  };
+
   if (isLoading || !book) return <div>Loading...</div>;
   return (
     <main className="h-full w-full mb-6">
@@ -191,16 +215,16 @@ const BookDetail = () => {
         <div className="h-16 border-b flex items-center justify-around gap-6">
           <div className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300">
             {book.myReadStatus === null && (
-              <>
+              <div onClick={handleStartReading} className="flex gap-3">
                 <PiBookLight className="text-xl" />
                 <div className="text-sm">책 읽기</div>
-              </>
+              </div>
             )}
             {book.myReadStatus?.readCompleted === false && (
-              <>
+              <div onClick={() => nav("/")} className="flex gap-3">
                 <PiBookOpen className="text-xl" />
                 <div className="text-sm">읽는 중</div>
-              </>
+              </div>
             )}
             {book.myReadStatus?.readCompleted === true && (
               <>
