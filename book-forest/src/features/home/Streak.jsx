@@ -1,50 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Streak = () => {
-  const data = {
-    "2024-06-20": [
-      {
-        "commit-type": "BookReview",
-        "content": "자바스크립트를 읽고..",
-        "exp": 100,
-      },
-      {
-        "commit-type": "Read",
-        "content": "책제목 - 23page",
-        "exp": 20,
-      },
-      {
-        "commit-type": "Read",
-        "content": "책제목2 - 31page",
-        "exp": 30,
-      },
-      {
-        "commit-type": "Comment",
-        "content": "댓글내용",
-        "exp": 10,
-      },
-    ],
-    "2024-06-21": [
-      {
-        "commit-type": "Comment",
-        "content": "댓글내용",
-        "exp": 10,
-      },
-    ],
-    "2024-06-22": [
-      {
-        "commit-type": "BookReview",
-        "content": "자바스크립트를 읽고..",
-        "exp": 100,
-      },
-      {
-        "commit-type": "Read",
-        "content": "책제목 - 23page",
-        "exp": 20,
-      },
-    ],
-  };
-
+const Streak = ({ commitData }) => {
   const commitTypeMap = {
     'Comment': '댓글',
     'BookReview': '독후감',
@@ -58,9 +14,14 @@ const Streak = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [data, setData] = useState(null);
   const itemsPerPage = 10;
 
-  const dates = Object.keys(data);
+  useEffect(() => {
+    setData(commitData || {});
+  }, [commitData]);
+
+  const dates = data ? Object.keys(data) : [];
   const totalPages = Math.ceil(dates.length / itemsPerPage);
 
   const handleClick = (event, pageNum) => {
@@ -68,9 +29,23 @@ const Streak = () => {
     setCurrentPage(pageNum);
   };
 
+  const formatDate = (dateString) => {
+    return dateString.replace(/-/g, '.');
+  };
+
   const renderTableRows = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const selectedDates = dates.slice(startIndex, startIndex + itemsPerPage);
+
+    if (selectedDates.length === 0) {
+      return (
+        <tr>
+          <td colSpan="4" className="text-center py-12">
+            현재 활동한 내역이 없습니다.
+          </td>
+        </tr>
+      );
+    }
 
     return selectedDates.map(date => (
       <tr key={date} className="border-b border-color-19">
@@ -80,25 +55,37 @@ const Streak = () => {
               {data[date].map((activity, index) => (
                 <tr key={index}>
                   <td className="w-32 py-2">
-                    <span className={`${commitTypeColorMap[activity['commit-type']]}`}>
-                      {commitTypeMap[activity['commit-type']]}
+                    <span className={`${commitTypeColorMap[activity.commitType]}`}>
+                      {commitTypeMap[activity.commitType]}
                     </span>
                   </td>
-                  <td>{activity.content}</td>
-                  <td className="w-60 text-center">+{activity.exp}p</td>
+                  <td>
+                    {activity.commitType === 'Comment' 
+                      ? `${activity.content}`
+                      : null }
+                    {activity.commitType === 'BookReview' 
+                      ? <a href={`/book-review/${activity.bookReviewId}`} className="text-blue-500 underline">
+                          {activity.bookReviewTitle}
+                        </a>
+                      : null }
+                    {activity.commitType === 'Read' 
+                      ? `${activity.bookTitle} - ${activity.readPage}page`
+                      : null }
+                  </td>
+                  <td className="w-60 text-center">+ {activity.exp}p</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </td>
-        <td className="w-36 text-center text-color-20 py-1.5">{date}</td>
+        <td className="w-36 text-center text-color-20 py-1.5">{formatDate(date)}</td>
       </tr>
     ));
   };
 
-  const container = `w-full flex flex-col justify-center items-center`
-  const btn = `px-3 py-2`
-  const table = `w-full`
+  const container = `w-full flex flex-col justify-center items-center`;
+  const btn = `px-3 py-2`;
+  const table = `w-full`;
 
   return (
     <div className={container}>

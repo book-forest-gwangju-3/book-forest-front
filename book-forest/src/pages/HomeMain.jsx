@@ -42,7 +42,7 @@ const HomeMain = () => {
           path="/"
           element={<MyPage commitData={commitData} isLoading={isLoading} />}
         />
-        <Route path="/streak" element={<Streak />} />
+        <Route path="/streak" element={<Streak commitData={commitData}/>} />
       </Routes>
     </div>
   );
