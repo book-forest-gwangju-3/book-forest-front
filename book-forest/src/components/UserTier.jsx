@@ -41,7 +41,7 @@ const UserTier = () => {
         <div className={container}>
           <div className={left}>
             <div className="mr-10">
-              <span className="text-color-9">?</span>
+              <span className="text-color-9">{userRanking.rank}</span>
               <span className="text-base text-color-17 ml-1">위</span>
             </div>
             <div>{userRanking.user?.nickname}</div>
