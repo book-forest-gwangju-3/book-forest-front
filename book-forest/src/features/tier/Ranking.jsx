@@ -1,24 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Ranking = () => {
-  // axios 요청 보내서 전체 유저 데이터 받아오기
+  // 전체 유저 데이터 받아오기
+  const [rankings, setRankings] = useState([]);
 
-  // 더미 데이터
-  const data = [
-    { username: 'userId1', nickname: 'userNickName1', point: 1000, tier: '골드5' },
-    { username: 'userId2', nickname: 'userNickName2', point: 1100, tier: '골드5' },
-    { username: 'userId3', nickname: 'userNickName3', point: 1200, tier: '골드5' },
-    { username: 'userId4', nickname: 'userNickName4', point: 1300, tier: '골드5' },
-    { username: 'userId5', nickname: 'userNickName5', point: 1400, tier: '골드5' },
-    { username: 'userId6', nickname: 'userNickName6', point: 2000, tier: '골드5' },
-    { username: 'userId7', nickname: 'userNickName7', point: 5000, tier: '골드5' },
-    { username: 'userId8', nickname: 'userNickName8', point: 5000, tier: '골드5' },
-    { username: 'userId9', nickname: 'userNickName9', point: 5000, tier: '골드5' },
-    { username: 'userId10', nickname: 'userNickName10', point: 5000, tier: '골드5' },
-    { username: 'userId11', nickname: 'userNickName11', point: 5000, tier: '골드5' },
-  ];
+  useEffect(() => {
+    const fetchBookReviews = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/user/ranking`);
+        setRankings(response.data)
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching book reviews:', error);
+      }
+    };
 
-  const sortedData = data.sort((a, b) => b.point - a.point);
+    fetchBookReviews();
+  }, []);
+
+  const sortedData = rankings.sort((a, b) => b.exp - a.exp);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,8 +72,8 @@ const Ranking = () => {
                   <div className={getBackgroundColor(rank)}>{rank}</div>
                 </td>
                 <td className={td}>{user.nickname}</td>
-                <td className={`${textCenter} ${td}`}>{user.point} p</td>
-                <td className={`${textCenter} ${td} ${tierBg}`}>{user.tier}</td>
+                <td className={`${textCenter} ${td}`}>{user.exp} p</td>
+                <td className={`${textCenter} ${td} ${tierBg}`}>{user.tierName}</td>
                 <td className={`${textCenter} ${td}`}>{user.username}</td>
               </tr>
             );
