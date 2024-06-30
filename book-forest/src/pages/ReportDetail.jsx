@@ -190,7 +190,11 @@ const ReportDetail = () => {
       </div>
       <main className="flex items-center justify-center">
         <div className="border bg-white mt-3 rounded-2xl p-4 w-full">
-          <div className="flex items-center justify-between">
+          <h1 className="whitespace-pre-wrap my-3 ml-3 text-2xl">
+            {report.title}
+          </h1>
+          <p className="ml-3 my-3 text-sm">{report.book.title}</p>
+          <div className="border-b-gray-300 border-b pb-5 flex ml-3 items-center justify-between">
             <div className="gap-3.5 flex items-center">
               <PiUserCircleLight className="object-cover w-10 h-10" />
               <div className="flex flex-col">
@@ -202,9 +206,8 @@ const ReportDetail = () => {
             </div>
           </div>
 
-          <h1 className="whitespace-pre-wrap mt-7 text-2xl">{report.title}</h1>
-          <div className="mt-5 flex gap-2 justify-center border-b pb-4 flex-wrap">
-            <p className="text-left">{report.content}</p>
+          <div className="mt-5 ml-3 flex gap-2 border-b pb-4 flex-wrap">
+            <p>{report.content}</p>
           </div>
           <div className="h-16 border-b flex items-center justify-around">
             <div

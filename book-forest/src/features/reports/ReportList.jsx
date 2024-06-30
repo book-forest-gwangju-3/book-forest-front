@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { sortedByDateDesc } from "../../utils/dateUtils";
+import { useSelector } from "react-redux";
 
 const ReportList = () => {
   const [reports, setReports] = useState([]); // 독후감 목록
@@ -14,6 +15,7 @@ const ReportList = () => {
   const [currentPage, setCurrentPage] = useState(1); // 페이징
   const [reportsPerPage] = useState(10); // 한 페이지당 보여줄 독후감 수
   const [sortOption, setSortOption] = useState("latest"); // 필터링
+  const isLogin = useSelector((state) => state.user.isLogin); // 로그인 여부
   const nav = useNavigate();
 
   useEffect(() => {
@@ -84,6 +86,15 @@ const ReportList = () => {
 
   // 페이지 변경 함수
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // 글 작성 핸들러
+  const handleWriteClick = () => {
+    if (isLogin) {
+      nav("/report/editor");
+    } else {
+      alert("로그인 후 이용 가능합니다.");
+    }
+  };
 
   // tailwind
   const containerClass = "my-10";
@@ -167,7 +178,7 @@ const ReportList = () => {
           </button>
         </div>
         <Button
-          onClick={() => nav("/report/editor")}
+          onClick={handleWriteClick}
           text={"글 작성"}
           color={"bg-pink-500 text-white"}
         />
