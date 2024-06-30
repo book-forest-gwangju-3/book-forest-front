@@ -11,14 +11,21 @@ import Report from "./pages/Report";
 import ReportDetail from "./pages/ReportDetail";
 import ReportEditor from "./pages/ReportEditor";
 import Header from "./components/Header";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <div>
       <Header />
       <div style={{ width: "1200px", margin: "0 auto" }}>
         <Routes>
-          <Route path="*" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/tier" element={<Tier />} />
