@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 
 const Ranking = () => {
   // 전체 유저 데이터 받아오기
@@ -10,8 +9,7 @@ const Ranking = () => {
     const fetchBookReviews = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/user/ranking`);
-        setRankings(response.data)
-        console.log(response.data)
+        setRankings(response.data);
       } catch (error) {
         console.error('Error fetching book reviews:', error);
       }
@@ -30,19 +28,27 @@ const Ranking = () => {
     setCurrentPage(pageNumber);
   };
 
-  const table = `w-full`
-  const th = `font-normal text-xs text-color-17 py-0.5`
-  const thTier = `font-normal text-xs text-color-17 py-0.5 w-48`
-  const thPoint = `font-normal text-xs text-color-17 py-0.5 w-56`
-  const thRank = `font-normal text-xs text-color-17 w-32 py-0.5`
-  const thId = `font-normal text-xs text-color-17 w-36`
-  const bdBottom = `border-b border-color-16`
-  const ranking = `px-8`
-  const item = `border-b border-color-16`
-  const textCenter = `text-center`
-  const td = `py-3`
-  const btn = `px-3 py-2`
-  const tierBg = `bg-color-1`
+  const getRank = (index) => {
+    if (index === 0) return 1;
+    const prevUser = sortedData[index - 1];
+    const currentUser = sortedData[index];
+    if (prevUser.exp === currentUser.exp) return getRank(index - 1);
+    return index + 1;
+  };
+
+  const table = `w-full`;
+  const th = `font-normal text-xs text-color-17 py-0.5`;
+  const thTier = `font-normal text-xs text-color-17 py-0.5 w-48`;
+  const thPoint = `font-normal text-xs text-color-17 py-0.5 w-56`;
+  const thRank = `font-normal text-xs text-color-17 w-32 py-0.5`;
+  const thId = `font-normal text-xs text-color-17 w-36`;
+  const bdBottom = `border-b border-color-16`;
+  const ranking = `px-8`;
+  const item = `border-b border-color-16`;
+  const textCenter = `text-center`;
+  const td = `py-3`;
+  const btn = `px-3 py-2`;
+  const tierBg = `bg-color-1`;
 
   const getBackgroundColor = (rank) => {
     if (rank === 1) return 'bg-color-11 w-6 rounded flex justify-center items-center flex-wrap ml-5';
@@ -65,7 +71,7 @@ const Ranking = () => {
         </thead>
         <tbody>
           {currentData.map((user, index) => {
-            const rank = (currentPage - 1) * itemsPerPage + index + 1;
+            const rank = getRank((currentPage - 1) * itemsPerPage + index);
             return (
               <tr key={index} className={item}>
                 <td className={`${ranking} ${td}`}>
