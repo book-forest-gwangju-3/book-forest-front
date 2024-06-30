@@ -16,6 +16,16 @@ const Header = () => {
     navigate("/login")
   };
 
+  const handleLinkClick = (e, path) => {
+    if (!isLogin) {
+      e.preventDefault();
+      alert('로그인이 필요한 서비스입니다.');
+      navigate("/login");
+    } else {
+      navigate(path);
+    }
+  }
+
   const headerClass = `bg-color-10 text-color-1 flex justify-center relative`;
   const logo = `text-3xl p-3.5`
   const navClass = `flex justify-center items-center`
@@ -25,7 +35,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={headerClass}>
-        <Link className={logo} to="/" >Logo</Link>
+        <a className={logo} href="/">Logo</a>
         {(isLogin) ? 
           <div className={styles.container}>
             <div className={styles.user}>
@@ -49,7 +59,7 @@ const Header = () => {
         }
       </div>
       <div className={navClass}>
-        <Link className={navItemClass} to="/" >책밭</Link>
+        <a className={navItemClass} onClick={(e) => handleLinkClick(e, "/")} href="/" >책밭</a>
         <Link className={navItemClass} to="/report" >독후감</Link>
         <Link className={navItemClass} to="/book-recommendation" >책추천</Link>
         <Link className={navItemClass} to="/book/search" >검색</Link>
