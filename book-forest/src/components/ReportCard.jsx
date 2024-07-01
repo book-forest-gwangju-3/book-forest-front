@@ -21,8 +21,8 @@ const ReportCard = ({ item, text }) => {
       <div className={wrapperClass}>
         <div className={textWrapperClass}>
           <h6 className={rankClass}>{text}</h6>
-          <h4 className={titleClass}>{item.title}</h4>
-          <p className={writerClass}>{item.user.username}</p>
+          <h4 className={titleClass}>제목 : {item.title}</h4>
+          <p className={writerClass}>글쓴이 : {item.user.username}</p>
           <p className={contentClass}>{item.content}</p>
           <Button
             onClick={() => nav(`/report/${item.id}`)}
