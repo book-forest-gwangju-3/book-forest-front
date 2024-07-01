@@ -47,9 +47,9 @@ const Heatmap = ({ commitData, isLoading }) => {
   }, [commitData, dateRange]);
 
   const getColor = (exp) => {
-    if (exp >= 200) return "bg-green-800";
-    if (exp >= 100) return "bg-green-600";
-    if (exp >= 50) return "bg-green-300";
+    if (exp > 300) return "bg-green-800";
+    if (exp > 200) return "bg-green-600";
+    if (exp > 100) return "bg-green-300";
     if (exp > 0) return "bg-green-100";
     return "bg-gray-200";
   };
@@ -111,19 +111,19 @@ const Heatmap = ({ commitData, isLoading }) => {
       </div>
       <div className="flex justify-end">
         <div className="flex items-center mr-4">
-          <div className="mr-2">1-49</div>
+          <div className="mr-2">1 - 100</div>
           <div className="w-10 h-10 bg-green-100 rounded-md"></div>
         </div>
         <div className="flex items-center mr-4">
-          <div className="mr-2">50-99</div>
+          <div className="mr-2">101 - 200</div>
           <div className="w-10 h-10 bg-green-300 rounded-md"></div>
         </div>
         <div className="flex items-center mr-4">
-          <div className="mr-2">100-199</div>
+          <div className="mr-2">201 - 300</div>
           <div className="w-10 h-10 bg-green-600 rounded-md"></div>
         </div>
         <div className="flex items-center mr-4">
-          <div className="mr-2">200+</div>
+          <div className="mr-2">301 +</div>
           <div className="w-10 h-10 bg-green-800 rounded-md"></div>
         </div>
         <div className="flex items-center mr-4">
