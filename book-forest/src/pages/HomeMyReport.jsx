@@ -12,7 +12,6 @@ const HomeMyReport = () => {
 
   return (
     <>
-      <h1>나의 독후감</h1>
       <MyBookReview />
     </>
   );

@@ -61,13 +61,15 @@ const Streak = ({ commitData }) => {
                   </td>
                   <td>
                     {activity.commitType === 'Comment' 
-                      ? `${activity.content}`
-                      : null }
-                    {activity.commitType === 'BookReview' 
-                      ? <a href={`/book-review/${activity.bookReviewId}`} className="text-blue-500 underline">
-                          {activity.bookReviewTitle}
+                      ? <a href={`/report/${activity.bookReviewId}`} className="text-blue-500 underline">
+                          {activity.content}
                         </a>
                       : null }
+                    {activity.commitType === 'BookReview' 
+                      ? <a href={`/report/${activity.bookReviewId}`} className="text-blue-500 underline">
+                          {activity.bookReviewTitle}
+                        </a>
+                        : null }
                     {activity.commitType === 'Read' 
                       ? `${activity.bookTitle} - ${activity.readPage}page`
                       : null }
