@@ -70,20 +70,26 @@ const Ranking = () => {
           </tr>
         </thead>
         <tbody>
-          {currentData.map((user, index) => {
-            const rank = getRank((currentPage - 1) * itemsPerPage + index);
-            return (
-              <tr key={index} className={item}>
-                <td className={`${ranking} ${td}`}>
-                  <div className={getBackgroundColor(rank)}>{rank}</div>
-                </td>
-                <td className={td}>{user.nickname}</td>
-                <td className={`${textCenter} ${td}`}>{user.exp} p</td>
-                <td className={`${textCenter} ${td} ${tierBg}`}>{user.tierName}</td>
-                <td className={`${textCenter} ${td}`}>{user.username}</td>
-              </tr>
-            );
-          })}
+          {currentData.length === 0 ? (
+            <tr>
+              <td colSpan="5" className={`${textCenter} ${td} pt-12`}>현재 등록된 유저가 없습니다</td>
+            </tr>
+          ) : (
+            currentData.map((user, index) => {
+              const rank = getRank((currentPage - 1) * itemsPerPage + index);
+              return (
+                <tr key={index} className={item}>
+                  <td className={`${ranking} ${td}`}>
+                    <div className={getBackgroundColor(rank)}>{rank}</div>
+                  </td>
+                  <td className={td}>{user.nickname}</td>
+                  <td className={`${textCenter} ${td}`}>{user.exp} p</td>
+                  <td className={`${textCenter} ${td} ${tierBg}`}>{user.tierName}</td>
+                  <td className={`${textCenter} ${td}`}>{user.username}</td>
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
       <div>
