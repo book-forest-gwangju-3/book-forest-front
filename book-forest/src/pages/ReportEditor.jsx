@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Button from "../components/Button";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import SearchForm from "../components/SearchForm";
 
 const ReportEditor = () => {
   const { id } = useParams();
@@ -15,7 +16,6 @@ const ReportEditor = () => {
   });
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -36,6 +36,7 @@ const ReportEditor = () => {
       setReport({ title: "", content: "", bookId: null });
     }
   }, [id]);
+
   const handleChange = (e) => {
     setReport({ ...report, [e.target.name]: e.target.value });
   };
@@ -79,54 +80,21 @@ const ReportEditor = () => {
     }
   };
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/books?q=${searchTerm}`
-      );
-      setSearchResults(response.data.items);
-    } catch (error) {
-      console.error("Error searching books", error);
-    }
-  };
-
-  const handleSelectBook = (book) => {
+  const handleBookSelect = (book) => {
     setReport({ ...report, bookId: book.id });
     setSearchTerm(book.title);
-    setSearchResults([]);
   };
 
   return (
     <div className="flex flex-col rounded-lg text-gray-800 border border-gray-300 p-4 shadow-lg mt-6">
       {!isEditMode && (
         <div>
-          <div className="flex">
-            <input
-              className="flex-grow h-10 px-5 text-sm rounded-lg border border-gray-300 outline-none"
-              placeholder="도서 제목을 입력해주세요"
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Button
-              onClick={handleSearch}
-              text="검색"
-              color="bg-pink-500 h-10 text-white ml-2"
-            />
-          </div>
-          {searchResults.length > 0 && (
-            <ul className="mt-2 border border-gray-300 rounded-lg max-h-40 overflow-y-auto">
-              {searchResults.map((book) => (
-                <li
-                  key={book.id}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleSelectBook(book)}
-                >
-                  {book.title}
-                </li>
-              ))}
-            </ul>
-          )}
+          <SearchForm
+            text="도서 제목을 입력해주세요"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onBookSelect={handleBookSelect}
+          />
         </div>
       )}
       <input
@@ -134,14 +102,14 @@ const ReportEditor = () => {
         placeholder="제목을 입력해주세요"
         type="text"
         name="title"
-        value={report.title}
+        value={report.title || ""}
         onChange={handleChange}
       />
       <textarea
         className="p-5 h-96 border border-gray-300 rounded-lg text-sm outline-none"
         placeholder="내용을 입력해주세요"
         name="content"
-        value={report.content}
+        value={report.content || ""}
         onChange={handleChange}
       />
       <div className="flex justify-end gap-3 mt-3">
