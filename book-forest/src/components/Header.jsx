@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { clearUser } from "./../features/user/userSlice"
 import { FaUserCircle } from "react-icons/fa"
 import styles from "./Header.module.css"
-import axios from "axios"
+import MainLogo from "./../assets/img/logo.png";
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -27,7 +27,7 @@ const Header = () => {
   }
 
   const headerClass = `bg-color-10 text-color-1 flex justify-center relative`;
-  const logo = `text-3xl p-3.5`
+  const logo = `text-3xl p-2 flex`
   const navClass = `flex justify-center items-center`
   const navItemClass = `p-2 mx-4`
   const hrClass = `border-color-7`
@@ -35,7 +35,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={headerClass}>
-        <a className={logo} href="/">Logo</a>
+        <a className={logo} href="/"><img src={MainLogo} alt="Logo" className="w-40"/></a>
         {(isLogin) ? 
           <div className={styles.container}>
             <div className={styles.user}>
