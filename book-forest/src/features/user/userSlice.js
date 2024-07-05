@@ -4,6 +4,7 @@ const initialState = {
   token: "",
   isLogin: false,
   userInfo: null,
+  isDbInitialized: false,
 };
 
 const userSlice = createSlice({
@@ -23,8 +24,12 @@ const userSlice = createSlice({
       state.isLogin = false;
       state.userInfo = null;
     },
+    setIsDbInitialized: (state) => {
+      state.isDbInitialized = !state.isDbInitialized;
+    },
   },
 });
 
-export const { setUser, setUserInfo, clearUser } = userSlice.actions;
+export const { setUser, setUserInfo, clearUser, setIsDbInitialized } =
+  userSlice.actions;
 export default userSlice.reducer;

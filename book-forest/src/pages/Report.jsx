@@ -1,16 +1,29 @@
 import SectionTitle from "../components/SectionTitle";
 import ReportCard from "../components/ReportCard";
 import ReportList from "../features/reports/ReportList";
-import img1 from "../assets/img/image1.png";
-import img2 from "../assets/img/image2.png";
-import img3 from "../assets/img/image3.png";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsDbInitialized } from "../features/user/userSlice";
 import axios from "axios";
+
 const Report = () => {
   const [weeklyBest, setWeeklyBest] = useState([]);
+  const dispatch = useDispatch();
+  const isDbInitialized = useSelector((state) => state.user.isDbInitialized);
+
   useEffect(() => {
     const fetchWeeklyBest = async () => {
       try {
+        if (!isDbInitialized) {
+          // 초기 데이터 안받아왔을때만 받아오기
+          await axios.post("http://localhost:8080/initdb/bomb", {
+            page: 1,
+            itemsPerPage: 30,
+          });
+          console.log("초기 db 받아오기");
+          dispatch(setIsDbInitialized(true));
+        }
+
         const response = await axios.get(
           `http://localhost:8080/book-reviews?sortBy=weeklyBest`
         );
@@ -28,7 +41,6 @@ const Report = () => {
       {weeklyBest.map((item, index) => (
         <ReportCard
           item={item}
-          img={img1}
           key={item.id}
           text={`주간 독후감 ${index + 1}위`}
         />
