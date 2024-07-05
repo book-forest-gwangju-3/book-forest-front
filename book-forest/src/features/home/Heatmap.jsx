@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
 import { LuSprout } from "react-icons/lu";
+import { FaLeaf } from "react-icons/fa";
+import { SiThymeleaf } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import SectionTitle from "../../components/SectionTitle";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -99,7 +101,7 @@ const Heatmap = ({ commitData, isLoading }) => {
             onMouseEnter={() => handleMouseEnter(commit.date)}
             onMouseLeave={handleMouseLeave}
           >
-            {commit.review && <LuSprout className="text-green-500 w-6 h-6" />}
+            {commit.review && <SiThymeleaf className="text-white w-6 h-6" />}
             {tooltip === commit.date && (
               <div className="absolute top-12 -right-12 text-center z-10 w-32 bg-white shadow-md p-2 rounded-md">
                 {commit.date}
@@ -129,7 +131,7 @@ const Heatmap = ({ commitData, isLoading }) => {
         <div className="flex items-center mr-4">
           <div className="mr-2">독후감</div>
           <div className="w-10 h-10 bg-gray-100 rounded-md flex justify-center items-center">
-            <LuSprout className="text-green-500 w-6 h-6" />
+            <SiThymeleaf className="text-white bg-green-300 w-6 h-6" />
           </div>
         </div>
       </div>
