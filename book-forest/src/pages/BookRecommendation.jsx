@@ -12,9 +12,9 @@ const BookRecommendation = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       setIsLoading(true);
-      const requestBody = {
+      const params = {
         page: 1,
-        itemsPerPage: 30,
+        item: 30,
       };
       try {
         const [
@@ -23,10 +23,10 @@ const BookRecommendation = () => {
           editorResponse,
           newAllResponse,
         ] = await Promise.all([
-          axios.post("http://localhost:8080/initdb/best", requestBody),
-          axios.post("http://localhost:8080/initdb/new-special", requestBody),
-          axios.post("http://localhost:8080/initdb/editor", requestBody),
-          axios.post("http://localhost:8080/initdb/new-all", requestBody),
+          axios.get("http://localhost:8080/books/best", { params }),
+          axios.get("http://localhost:8080/books/new-special", { params }),
+          axios.get("http://localhost:8080/books/editor", { params }),
+          axios.get("http://localhost:8080/books/new-all", { params }),
         ]);
         setBestSellers(bestResponse.data);
         setNewSpecial(newSpecialResponse.data);
