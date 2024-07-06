@@ -154,6 +154,11 @@ const BookDetail = () => {
     }
   };
 
+  // 독후감 쓰기 클릭시 독후감 작성 페이지로 이동
+  const handleWriteReport = () => {
+    nav(`/report/editor?bookId=${id}`);
+  };
+
   // 책 읽기 시작
   const handleStartReading = async () => {
     if (!isLogin) {
@@ -234,7 +239,7 @@ const BookDetail = () => {
             )}
           </div>
           <div
-            onClick={() => nav("/report/editor")}
+            onClick={handleWriteReport}
             className="flex items-center gap-3 cursor-pointer transition transform hover:scale-105 duration-300"
           >
             <PiPencilSimpleLine className="text-xl" />
