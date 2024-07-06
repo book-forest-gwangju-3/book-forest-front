@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
 import axios from "axios";
@@ -6,7 +6,8 @@ import { useSelector } from "react-redux";
 import SearchForm from "../components/SearchForm";
 
 const ReportEditor = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // 수정모드일 때 사용
+  const location = useLocation(); // URL 파라미터 읽기 위해 사용
   const nav = useNavigate();
   const token = useSelector((state) => state.user.token);
   const [report, setReport] = useState({
@@ -15,10 +16,13 @@ const ReportEditor = () => {
     bookId: null,
   });
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isBookSelected, setIsBookSelected] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [savedBookName, setSavedBookName] = useState(""); // 책 상세정보에서 독후감 쓰기 버튼 눌러서 들어올 때 책 제목
 
   useEffect(() => {
     if (id) {
+      // 수정 모드
       setIsEditMode(true);
       const fetchReport = async () => {
         try {
@@ -32,10 +36,37 @@ const ReportEditor = () => {
       };
       fetchReport();
     } else {
+      // 새 독후감 작성 모드
       setIsEditMode(false);
-      setReport({ title: "", content: "", bookId: null });
+      const params = new URLSearchParams(location.search);
+      const bookId = params.get("bookId");
+      if (bookId) {
+        // BookDetail에서 넘어온 경우
+        setReport((prev) => ({ ...prev, bookId: bookId }));
+        const fetchBookTitle = async () => {
+          try {
+            const response = await axios.get(
+              `http://localhost:8080/books/${bookId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            setSavedBookName(response.data.book.title);
+            console.log(response.data.book.title);
+          } catch (error) {
+            console.error("Error fetching bookTitle", error);
+          }
+        };
+        fetchBookTitle();
+        setIsBookSelected(true);
+      } else {
+        // 완전히 새로운 독후감 작성(독후감 게시판에서 글 작성 누른 경우)
+        setReport({ title: "", content: "", bookId: null });
+      }
     }
-  }, [id]);
+  }, [id, location, token]);
 
   const handleChange = (e) => {
     setReport({ ...report, [e.target.name]: e.target.value });
@@ -87,7 +118,7 @@ const ReportEditor = () => {
 
   return (
     <div className="flex flex-col rounded-lg text-gray-800 border border-gray-300 p-4 shadow-lg mt-6">
-      {!isEditMode && (
+      {!isEditMode && !isBookSelected && (
         <div>
           <SearchForm
             text="도서 제목을 입력해주세요"
@@ -95,6 +126,11 @@ const ReportEditor = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             onBookSelect={handleBookSelect}
           />
+        </div>
+      )}
+      {isBookSelected && (
+        <div className="flex items-center h-10 px-5 text-sm rounded-lg border border-gray-300">
+          {savedBookName}
         </div>
       )}
       <input
