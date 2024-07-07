@@ -18,7 +18,18 @@ const Streak = ({ commitData }) => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    setData(commitData || {});
+    if (commitData) {
+      // 최신 날짜 순으로 정렬
+      const sortedDates = Object.keys(commitData).sort((a, b) => new Date(b) - new Date(a));
+
+      // 날짜 내에서 배열을 뒤집음
+      const sortedData = {};
+      sortedDates.forEach(date => {
+        sortedData[date] = commitData[date].slice().reverse();
+      });
+
+      setData(sortedData);
+    }
   }, [commitData]);
 
   const dates = data ? Object.keys(data) : [];

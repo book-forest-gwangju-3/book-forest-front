@@ -2,6 +2,7 @@ import MyReportCard from "./../../components/MyReportCard";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { sortedByDateDesc } from './../../utils/dateUtils';
 
 const MyBookReview = () => {
   const [bookReviews, setBookReviews] = useState([]);
@@ -19,8 +20,9 @@ const MyBookReview = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          setBookReviews(response.data.bookReviews);
-          console.log(response.data);
+          const sortedReviews = sortedByDateDesc(response.data.bookReviews);
+          setBookReviews(sortedReviews);
+          console.log(sortedReviews);
         } catch (error) {
           console.error('Error fetching book reviews:', error);
         }
